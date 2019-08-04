@@ -1,0 +1,97 @@
+\documentclass[12pt, twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+
+\usepackage{amsthm}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathrsfs}
+\usepackage{euscript}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{bm}
+\usepackage{tabularx}
+\usepackage{adjustbox}
+
+
+\usepackage[toc,page]{appendix}
+
+\usepackage{comment}
+\usepackage{rotating}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}[theorem]{Лемма}
+\newtheorem{definition}{Определение}[section]
+
+\numberwithin{equation}{section}
+
+\newcommand*{\No}{No.}
+\begin{document}
+
+\title{\bf Смесь экспертов\thanks{Работа выполнена при поддержке РФФИ и правительства РФ.}}
+\date{}
+\author{}
+\maketitle
+
+\begin{center}
+\bf
+А.\,В.~Грабовой\footnote{Московский физико-технический институт, grabovoy.av@phystech.edu}, В.\,В.~Стрижов\footnote{Московский физико-технический институт, strijov@ccas.ru}
+
+\end{center}
+
+{\centering\begin{quote}
+\textbf{Аннотация:} 
+
+
+\smallskip
+\textbf{Ключевые слова}: ; .
+
+\smallskip
+\textbf{DOI}: 00.00000/00000000000000
+\end{quote}
+}
+
+\section{Введение}
+
+\section{Постановка задачи}
+
+Задана выборка:
+\begin{equation}
+\label{eq:st:1}
+\begin{aligned}
+\textbf{X} \in \mathbb{R}^{N \times n},
+\end{aligned}
+\end{equation}
+где~$N$~---~количество объектов в выборке, а~$n$~---~размерность признакового пространства.
+
+\subsection{Смесь экспертов}
+\begin{definition}
+Смесь экспертов~---~мультимодель, определяющая правдоподобие каждой $\pi_k$ каждой модели $\textbf{f}_k$ на объекте $\textbf{x}$ на основе его признакового опсиания.
+
+\begin{equation}
+\label{eq:st:1}
+\begin{aligned}
+\hat{\textbf{f}} = \sum_{k=1}^{K}\pi_{k}\textbf{f}_k, \qquad \pi_{k}\left(\textbf{x}, \textbf{v}\right):\mathbb{R}^{2\times n} \to [0, 1],
+\end{aligned}
+\end{equation}
+где~$\textbf{f}$~---~мультимодель, а $\textbf{f}_k$ является некоторой моделью.
+\end{definition}
+
+\section{Вычислительный эксперимент}
+
+\section{Заключение}
+
+\begin{thebibliography}{99}
+
+\end{thebibliography}
+
+\end{document}
+

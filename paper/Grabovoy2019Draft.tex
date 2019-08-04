@@ -1,0 +1,462 @@
+\documentclass[12pt, twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+
+\usepackage{amsthm}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathrsfs}
+\usepackage{euscript}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{bm}
+\usepackage{tabularx}
+\usepackage{adjustbox}
+
+
+\usepackage[toc,page]{appendix}
+
+\usepackage{comment}
+\usepackage{rotating}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}[theorem]{Лемма}
+\newtheorem{definition}{Определение}[section]
+
+\numberwithin{equation}{section}
+
+\newcommand*{\No}{No.}
+\begin{document}
+
+\title{\bf Смесь экспертов\thanks{Работа выполнена при поддержке РФФИ и правительства РФ.}}
+\date{}
+\author{}
+\maketitle
+
+\begin{center}
+\bf
+А.\,В.~Грабовой\footnote{Московский физико-технический институт, grabovoy.av@phystech.edu}, В.\,В.~Стрижов\footnote{Московский физико-технический институт, strijov@ccas.ru}
+
+\end{center}
+
+{\centering\begin{quote}
+\textbf{Аннотация:} 
+
+
+\smallskip
+\textbf{Ключевые слова}: ; .
+
+\smallskip
+\textbf{DOI}: 00.00000/00000000000000
+\end{quote}
+}
+
+\section{Введение}
+
+\section{Постановка задачи}
+
+Задана выборка:
+\begin{equation}
+\label{eq:st:1}
+\begin{aligned}
+\textbf{X} \in \mathbb{R}^{N \times n},
+\end{aligned}
+\end{equation}
+где~$N$~---~количество объектов в выборке, а~$n$~---~размерность признакового пространства.
+
+\subsection{Смесь моделей}
+
+\begin{definition}
+Смесь моделей~---~мультимодель, ответы которой представляют собой взвешенную сумму ответов всех задействованных моедлей независимо от объекта.
+
+\begin{equation}
+\label{eq:st:2}
+\begin{aligned}
+\hat{\textbf{f}} = \sum_{k=1}^{K}\pi_{k}\textbf{f}_k, \qquad \pi_{k} = const,
+\end{aligned}
+\end{equation}
+где~$\textbf{f}$~---~мультимодель, а $\textbf{f}_k$ является некоторой моделью.
+\end{definition}
+
+\paragraph{Логистическая регресия.} Рассматривается следующая вероятностная модель:
+
+\begin{enumerate}
+	\item Веса моделей в смеси~$\bm{\pi}$ получены из априорного распределения 
+	$$p\left(\bm{\pi}|\mu\right);$$
+	
+	\item Векторы параметров моделей~$\textbf{w}_k$ получены из нормального распределения 
+	$$p\left(\textbf{w}_k|\textbf{A}_k\right) = \mathcal{N}\left(\textbf{w}_k|\textbf{0}, \textbf{A}_{k}^{-1}\right),~k=1,\cdots K;$$
+	
+	\item Для каждого объекта~$\textbf{x}_i$ выбрана модель~$\textbf{f}_{k_i},$ которой он описывается, причем $p\left(k_i=k\right) = \pi_k;$
+	
+	\item  Для каждого объекта $\textbf{x}_i$ класс $y_i$ определен в соответсвии с моделью 
+	$$\textbf{f}_{k_i}:~y_i\sim~\text{Be}\left(\sigma\left(\textbf{w}_{k_i}^{\mathsf{T}}\textbf{x}_i\right)\right),$$
+	 где~$\sigma$~---~сигмоидная функция.
+\end{enumerate}
+
+Совместное правдоподобие модели:
+
+\begin{equation}
+\label{eq:st:3}
+\begin{aligned}
+p\left(\textbf{y}, \textbf{w}_1,\cdots,\textbf{w}_K, \bm{\pi}|\textbf{X}, \textbf{A}_1, \cdots, \textbf{A}_K, \bm{\mu}\right) = \\
+=
+p\left(\bm{\pi}|\bm{\mu}\right)\prod_{k=1}^{K}\mathcal{N}\left(\textbf{w}_k|\textbf{0}, \textbf{A}_{k}^{-1}\right)\prod_{i=1}^{N}\left(\sum_{l=1}^{K}\pi_l\sigma\left(y_i\textbf{w}_{l}^{\mathsf{T}}\textbf{x}_{i}\right)\right)
+\end{aligned}
+\end{equation}
+
+Введем скрытые переменные $\textbf{Z} = ||z_{ik}||,$ тогда совместное правдоподобие будет иметь вид:
+
+\begin{equation}
+\label{eq:st:4}
+\begin{aligned}
+p\left(\textbf{y}, \textbf{W}, \bm{\pi}, \textbf{Z}|\textbf{X}, \textbf{A}_1, \cdots, \textbf{A}_K, \bm{\mu}\right)
+=
+\text{Dir}\left(\bm{\pi}|\bm{\mu}\right)\prod_{k=1}^{K}\mathcal{N}\left(\textbf{w}_k|\textbf{0}, \textbf{A}_{k}^{-1}\right)\prod_{i=1}^{N}\prod_{l=1}^{K}\left(\pi_l\sigma\left(y_i\textbf{w}_{l}^{\mathsf{T}}\textbf{x}_{i}\right)\right)^{z_{il}}
+\end{aligned}
+\end{equation}
+
+Используем вариационное приближение (Е-шаг):
+\begin{equation}
+\label{eq:st:5}
+\begin{aligned}
+q\left(\textbf{Z}, \textbf{w}_1, \cdots, \textbf{w}_K, \bm{\pi}\right) = q\left(\textbf{Z}\right)q\left(\textbf{w}_1, \cdots,\textbf{w}_K\right)q\left(\bm{\pi}\right)
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{Z}\right)$:
+
+\begin{equation}
+\label{eq:st:6}
+\begin{aligned}
+\log q\left(\textbf{Z}\right) \approx \mathsf{E}_{q/\textbf{Z}}\log{p\left(\textbf{y}, \textbf{w}_1, \cdots, \textbf{w}_K, \textbf{Z}, \bm{\pi}|\textbf{X}, \textbf{A}_1, \cdots, \textbf{A}_K, \bm{\mu}\right)}\approx \\
+\approx \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left(\mathsf{E}\log \pi_k + \mathsf{E}\log\sigma\left(y_i\textbf{w}_{l}^{\mathsf{T}}\textbf{x}_{i}\right)\right)
+\end{aligned}
+\end{equation}
+
+Получили распределение $q\left(\textbf{Z}\right)$:
+
+\begin{equation}
+\label{eq:st:7}
+\begin{aligned}
+p\left(z_{ik} = 1\right) = \frac{\exp{\mathsf{E}\log{\pi_{k}}+\mathsf{E}\log{\sigma\left(y_i\textbf{w}_{l}^{\mathsf{T}}\textbf{x}_{i}\right)}}}{\sum_ p\left(z_{ik} = 1\right)}
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\bm{\pi}\right)$:
+
+\begin{equation}
+\label{eq:st:8}
+\begin{aligned}
+\log q\left(\bm{\pi}\right) \approx \mathsf{E}_{q/\bm{\pi}}\log{p\left(\textbf{y}, \textbf{w}_1, \cdots, \textbf{w}_K, \textbf{Z}, \bm{\pi}|\textbf{X}, \textbf{A}_1, \cdots, \textbf{A}_K, \bm{\mu}\right)} \approx \\
+\approx \sum_{k=1}^{K}\log{\pi_k}\left(\mu_k-1+\sum_{i=1}^{N}\mathsf{E}z_{ik}\right)
+\end{aligned}
+\end{equation}
+
+Получили распределение $q\left(\bm{\pi}\right)$:
+\begin{equation}
+\label{eq:st:9}
+\begin{aligned}
+\log q\left(\bm{\pi}\right) = \text{Dir}\left(\bm{\pi}|\bm{\mu} + \bm{\gamma}\right), \qquad \gamma_k = \sum_{i=1}^{N}z_{ik}
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{W}\right)$:
+
+\begin{equation}
+\label{eq:st:10}
+\begin{aligned}
+\log q\left(\textbf{W}\right) \approx \mathsf{E}_{q/\textbf{W}}\log{p\left(\textbf{y}, \textbf{w}_1, \cdots, \textbf{w}_K, \textbf{Z}, \bm{\pi}|\textbf{X}, \textbf{A}_1, \cdots, \textbf{A}_K, \bm{\mu}\right)} \approx \\
+\approx \sum_{k=1}^{K}\left(-\frac{1}{2}\textbf{w}_{k}\textbf{A}_k\textbf{w}_{k} + \sum_{i=1}^{N}\mathsf{E}z_{ik}\log{\sigma\left(y_i\textbf{w}_{l}^{\mathsf{T}}\textbf{x}_{i}\right)}\right)
+\end{aligned}
+\end{equation}
+
+Сделаем М-шаг:
+\begin{equation}
+\label{eq:st:25}
+\begin{aligned}
+\mathsf{E}_{q(\bm{\pi}, \textbf{W}, \textbf{Z})} \log p(\textbf{y}, \textbf{W}, \bm{\pi}, \textbf{Z}|\textbf{X}, \textbf{A}, \bm{\mu}) = \mathcal{F}(\textbf{A}) \propto \\
+ \propto\sum_{k=1}^{K}\left[ \left(\mu_k+2\gamma_k - 1\right)\mathsf{E}\log\pi_k +\frac{1}{2}\log\det\textbf{A}_k^{-1} -\frac{1}{2}\mathsf{E}\textbf{w}_k^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_k\right] + \\
++ \sum_{k=1}^{K}\left[ \sum_{i=1}^{N}\mathsf{E}z_{ik}\left(\mathsf{E}\log\pi_k + \mathsf{E} \log\sigma\left(y_i\textbf{w}_{l}^{\mathsf{T}}\textbf{x}_{i}\right)\right)\right]
+\end{aligned}
+\end{equation}
+
+Оптимизируем $\textbf{A}_k$:
+\begin{equation}
+\label{eq:st:26}
+\begin{aligned}
+\frac{\partial\mathcal{F}}{\partial\textbf{A}_k^{-1}} = \frac{1}{2}\textbf{A}_k -\frac{1}{2}\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}} = \textbf{0}\Rightarrow \textbf{A}_k^{new} = \text{diag}(\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}})
+\end{aligned}
+\end{equation}
+
+\paragraph{Линейная регрессия.}  Рассматривается следующая вероятностная модель:
+
+\begin{enumerate}
+	\item Веса моделей в смеси~$\bm{\pi}$ получены из априорного распределения 
+	$$p\left(\bm{\pi}|\mu\right);$$
+	
+	\item Векторы параметров моделей~$\textbf{w}_k$ получены из нормального распределения 
+	$$p\left(\textbf{w}_k|\textbf{A}_k\right) = \mathcal{N}\left(\textbf{w}_k|\textbf{0}, \textbf{A}_{k}\right),~k=1,\cdots K;$$
+	
+	\item Для каждого объекта~$\textbf{x}_i$ выбрана модель~$\textbf{f}_{k_i},$ которой он описывается, причем $p\left(k_i=k\right) = \pi_k;$
+	
+	\item  Для каждого объекта $\textbf{x}_i$ класс $y_i$ определен в соответсвии с моделью 
+	$$\textbf{f}_{k_i}:~y_i\sim~\mathcal{N}\left(\textbf{w}_{k_i}^{\mathsf{T}}\textbf{x}_i + b_k, \beta^{-1}\right)$$
+\end{enumerate}
+
+Совместное правдоподобие модели:
+
+\begin{equation}
+\label{eq:st:11}
+\begin{aligned}
+p(\textbf{y}, \textbf{W}, \bm{\pi}|\textbf{X}, \textbf{A}, \textbf{b}, \beta, \mu) = \text{Dir}(\bm{\pi}|\bm{\mu})\prod_{k=1}^{K}N(\textbf{w}_k|\textbf{0}, \textbf{A}_k)\prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_kN(y_i|\textbf{w}_k^{\mathsf{T}}\textbf{x}_i+b_k, \beta^{-1})\right)\end{aligned}
+\end{equation}
+
+Введем скрытые переменные $\textbf{Z} = ||z_{ik}||$, тогда совместное правдоподобие будет иметь вид:
+\begin{equation}
+\label{eq:st:12}
+\begin{aligned}
+p(\textbf{y}, \textbf{W}, \bm{\pi}, \textbf{Z}|\textbf{X}, \textbf{A}, \textbf{b}, \beta, \mu) = \text{Dir}(\bm{\pi}|\bm{\mu})\prod_{k=1}^{K}N(\textbf{w}_k|\textbf{0}, \textbf{A}_k)\prod_{i=1}^{N}\prod_{j=1}^{K}\left(\pi_kN(y_i|\textbf{w}_k^{\mathsf{T}}\textbf{x}_i+b_k, \beta^{-1})\right)^{z_{ik}}
+\end{aligned}
+\end{equation}
+
+Используем вариационное приближение (Е-шаг):
+\begin{equation}
+\label{eq:st:13}
+\begin{aligned}
+q(\bm{\pi}, \textbf{W}, \textbf{Z}) = q(\bm{\pi})q(\textbf{W})q(\textbf{Z})
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{Z}\right)$:
+\begin{equation}
+\label{eq:st:14}
+\begin{aligned}
+\log q(\textbf{Z}) = \mathsf{E}_{q/Z}\log p(\textbf{y}, \textbf{W}, \bm{\pi}, \textbf{Z}|\textbf{X}, \textbf{A}, \textbf{b}, \beta, \bm{\mu}) \propto \\
+\propto \sum_{i=1}^{N}\sum_{k=1}^{K} z_{ik}\left(\mathsf{E}_{\pi}\log\pi_k-\frac{\beta}{2}\left[y_i-b_k-\textbf{w}_k^{\mathsf{T}}\textbf{x}_i\right]^2 + \frac{1}{2}\left[\log\beta - \log2\pi\right]\right) = \\
+=  \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left(\mathsf{E}\log\pi_k - \frac{\beta}{2}\left[\left(y_i-b_k\right)^2 -2\left(y_i-b_k\right)\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k +\textbf{x}_i^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}}\right)\textbf{x}_i\right]\right) \Rightarrow \\
+\Rightarrow p(z_{ik} = 1) =  \frac{\exp\left(\mathsf{E}\log\pi_k - \frac{\beta}{2}\left[\left(y_i-b_k\right)^2 -2\left(y_i-b_k\right)\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k +\textbf{x}_i^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}}\right)\textbf{x}_i\right] \right)}{\sum_k p(z_{ik}=1)}
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\bm{\pi}\right)$:
+\begin{equation}
+\label{eq:st:15}
+\begin{aligned}
+\log q(\bm{\pi}) = \mathsf{E}_{q/\bm{\pi}}\log p(\textbf{y}, \textbf{W}, \bm{\pi}, \textbf{Z}|\textbf{X}, \textbf{A}, \textbf{b}, \beta, \bm{\mu})
+\propto \sum_{k=1}^{K}\log\pi_k\left(\mu_k-1 +\sum_{i=1}^{N}\mathsf{E}z_{ik}\right) \Rightarrow \\
+\Rightarrow q(\bm{\pi}) = \text{Dir}(\bm{\pi}|\bm{\mu}+\bm{\gamma}), \qquad \gamma_k = \sum_{i=1}^{N}\mathsf{E}z_{ik}
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{W}\right)$:
+\begin{equation}
+\label{eq:st:16}
+\begin{aligned}
+\log q(\textbf{W}) = \mathsf{E}_{q/\textbf{W}}\log p(\textbf{y}, \textbf{W}, \bm{\pi}, \textbf{Z}|\textbf{X}, \textbf{A}, \textbf{b}, \beta, \bm{\mu}) \propto \\
+ \propto \sum_{k=1}^{K}-\frac{1}{2}\left(\textbf{w}_k^{\mathsf{T}}\textbf{A}_k^{-1}\textbf{w}_k + \beta\sum_{i=1}^{N}\mathsf{E}z_{ik}\left[y_i - b_k -\textbf{w}_k^{\mathsf{T}}\textbf{x}_i\right]^2\right) \propto \\
+\propto -\frac{1}{2}\sum_{k=1}^{K}\left(\textbf{w}_k^{\mathsf{T}}\textbf{A}_k^{-1}\textbf{w}_k + \textbf{w}_k^{\mathsf{T}}\left[\beta\sum_{i=1}^{N}\textbf{x}_i\textbf{x}_i^{\mathsf{T}}\mathsf{E}z_{ik}\right]\textbf{w}_k -2\beta\textbf{w}_k^{\mathsf{T}}\left[\sum_{i=1}^{N}\textbf{x}_i\left(y_i-b_k\right)\mathsf{E}z_{ik}\right]\right) \propto \\
+\propto -\frac{1}{2}\sum_{k=1}^{K}\left(\textbf{w}_k^{\mathsf{T}}\textbf{B}_k^{-1}\textbf{w}_k - 2\textbf{w}_k^{\mathsf{T}}\textbf{m}_k \right),
+\end{aligned}
+\end{equation}
+где введены обозначения
+\begin{equation}
+\label{eq:st:17}
+\begin{aligned}
+\textbf{B}_k = \left(\textbf{A}_k^{-1} + \beta\sum_{i=1}^{N}\textbf{x}_i\textbf{x}_i^{\mathsf{T}}\mathsf{E}z_{ik}\right)^{-1} \quad \textbf{m}_k = \beta\textbf{B}_k\left(\sum_{i=1}^{N}\textbf{x}_i\left(y_i-b_k\right)\mathsf{E}z_{ik} \right)
+\end{aligned}
+\end{equation}
+
+Получаем  $q\left(\textbf{W}\right)$:
+\begin{equation}
+\label{eq:st:18}
+\begin{aligned}
+q(\textbf{w}_k) = N(\textbf{w}_k|\textbf{m}_k, \textbf{B}_k)
+\end{aligned}
+\end{equation}
+
+Сделаем М-шаг:
+\begin{equation}
+\label{eq:st:19}
+\begin{aligned}
+\mathsf{E}_{q(\bm{\pi}, \textbf{W}, \textbf{Z})} \log p(\textbf{y}, \textbf{W}, \bm{\pi}, \textbf{Z}|\textbf{X}, \textbf{A}, \textbf{b}, \beta, \mu) = \mathcal{F}(\textbf{A}, \textbf{b}, \beta) \propto \\
+ \propto\sum_{k=1}^{K}\left[ \left(\mu_k+2\gamma_k - 1\right)\mathsf{E}\log\pi_k +\frac{1}{2}\log\det\textbf{A}_k^{-1} -\frac{1}{2}\mathsf{E}\textbf{w}_k^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_k\right] + \\
++ \sum_{k=1}^{K}\left[ \sum_{i=1}^{N}\mathsf{E}z_{ik}\left(\mathsf{E}\log\pi_k + \log\beta - \log2\pi -\frac{\beta}{2}\mathsf{E}\left(y_i - b_k - \textbf{w}_k^{\mathsf{T}}\textbf{x}_i\right)^2\right)\right]
+\end{aligned}
+\end{equation}
+
+Оптимизируем $\textbf{A}_k$:
+\begin{equation}
+\label{eq:st:20}
+\begin{aligned}
+\frac{\partial\mathcal{F}}{\partial\textbf{A}_k^{-1}} = \frac{1}{2}\textbf{A}_k -\frac{1}{2}\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}} = \textbf{0}\Rightarrow \textbf{A}_k^{new} = \text{diag}(\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}})
+\end{aligned}
+\end{equation}
+
+Оптимизируем $b_k$:
+\begin{equation}
+\label{eq:st:21}
+\begin{aligned}
+\frac{\partial\mathcal{F}}{\partial b_k} = \sum_{i=1}^{N}\mathsf{E}z_{ik}\left(y_i-b_k -\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k\right) = 0 \Rightarrow \\
+\Rightarrow b_k^{new}  = \frac{1}{S_k}\sum_{i=1}^{N}y_i\mathsf{E}z_{ik} -\frac{1}{S_k}\sum_{i=1}^{N}\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k\mathsf{E}z_{ik}, \qquad S_k = \sum_{i=1}^{N}\mathsf{E}z_{ik}
+\end{aligned}
+\end{equation}
+
+Оптимизируем $\beta$:
+\begin{equation}
+\label{eq:st:22}
+\begin{aligned}
+\frac{\partial \mathcal{F}}{\partial \beta} = \sum_{k=1}^{K}\sum_{i=1}^{N}\left(\frac{1}{\beta}\mathsf{E}z_{ik} - \frac{1}{2}\mathsf{E}z_{ik}\left[\left(y_i-b_k\right)^2 -2\left(y_i-b_k\right)\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k+\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}}\textbf{x}_i\right]\right) = 0 \Rightarrow \\
+\Rightarrow \frac{1}{\beta^{new}} = \frac{\sum\sum\left[\left(y_i-b_k\right)^2 -2\left(y_i-b_k\right)\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k+\textbf{x}_i^{\mathsf{T}}\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}}\textbf{x}_i\right]\mathsf{E}z_{ik}}{\sum\sum \mathsf{E}z_{ik}}
+\end{aligned}
+\end{equation}
+
+Оптимизируем $\mu_k$ (пока нет):
+\begin{equation}
+\label{eq:st:23}
+\begin{aligned}
+\frac{\partial \mathcal{F}}{\partial \mu_k} = ???
+\end{aligned}
+\end{equation}
+
+Важные матожидания:
+\begin{equation}
+\label{eq:st:24}
+\begin{aligned}
+\mathsf{E}z_{ik} = p(z_{ik} = 1) \\
+\mathsf{E}\log\pi_{k} = \psi^{0}(\mu_k + \gamma_k) - \psi^{0}(K\mu_k + N) \\
+\mathsf{E}\textbf{w}_k\textbf{w}_k^{\mathsf{T}} = \textbf{B}_k + \textbf{m}_k\textbf{m}_k^{\mathsf{T}}
+\end{aligned}
+\end{equation}
+
+\subsection{Смесь экспертов}
+\begin{definition}
+Смесь экспертов~---~мультимодель, определяющая правдоподобие каждой $\pi_k$ каждой модели $\textbf{f}_k$ на объекте $\textbf{x}$ на основе его признакового опсиания.
+
+\begin{equation}
+\label{eq:st:27}
+\begin{aligned}
+\hat{\textbf{f}} = \sum_{k=1}^{K}\pi_{k}\textbf{f}_k, \qquad \pi_{k}\left(\textbf{x}, \textbf{v}\right):\mathbb{R}^{2\times n} \to [0, 1],
+\end{aligned}
+\end{equation}
+где~$\textbf{f}$~---~мультимодель, а $\textbf{f}_k$ является некоторой моделью.
+\end{definition}
+
+\paragraph{Линейная регрессия.} Рассматривается следующая вероятностная модель:
+\begin{enumerate}
+	\item one
+	\item two
+\end{enumerate}
+
+Совместное правдоподобие модели:
+\begin{equation}
+\label{eq:st:28}
+\begin{aligned}
+p\left(\textbf{y}, \textbf{W}, \textbf{V}, \textbf{Z}, \bm{\pi}|\textbf{X}, \textbf{A}, \textbf{C}, \beta\right) = \\
+= \prod_{k=1}^{K}\mathcal{N}\left(\textbf{v}_k|\textbf{0}, \textbf{C}_k\right)\prod_{k=1}^{K}\mathcal{N}\left(\textbf{w}_k|\textbf{0}, \textbf{A}_k\right)\prod_{i=1}^{N}\left[\left(\sum_{k=1}^{K}\pi_{ik}\mathcal{N}\left(y_i|\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_i, \beta^{-1}\right)\right)\text{Dir}\left(\bm{\pi}_i|\bm{\mu}_i\right)\right],
+\end{aligned}
+\end{equation}
+где $\bm{\mu}_i = \exp\left(\textbf{V}\textbf{x}_i\right)$
+
+Введем скрытые переменные $\textbf{Z} = ||z_{ik}||,$ тогда совместное правдоподобие будет иметь вид:
+\begin{equation}
+\label{eq:st:29}
+\begin{aligned}
+p\left(\textbf{y}, \textbf{W}, \textbf{V}, \textbf{Z}, \bm{\pi}|\textbf{X}, \textbf{A}, \textbf{C}, \beta\right) = \\
+= \prod_{k=1}^{K}\mathcal{N}\left(\textbf{v}_k|\textbf{0}, \textbf{C}_k\right)\prod_{k=1}^{K}\mathcal{N}\left(\textbf{w}_k|\textbf{0}, \textbf{A}_k\right)
+\prod_{i=1}^{N}\left[\left(\prod_{k=1}^{K}\left(\pi_{ik}\mathcal{N}\left(y_i|\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_i, \beta^{-1}\right)\right)^{z_{ik}}\right)\text{Dir}\left(\bm{\pi}_i|\bm{\mu}_i\right)\right],
+\end{aligned}
+\end{equation}
+где $\bm{\mu}_i = \exp\left(\textbf{V}\textbf{x}_i\right)$
+
+Используем вариационное приближение (Е-шаг):
+\begin{equation}
+\label{eq:st:30}
+\begin{aligned}
+q\left(\textbf{V}, \textbf{W}, \textbf{Z}, \bm{\pi}\right) = q\left(\textbf{V}\right)q\left(\textbf{W}\right)q\left(\textbf{Z}\right)q\left(\bm{\pi}\right)
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{Z}\right)$:
+\begin{equation}
+\label{eq:st:31}
+\begin{aligned}
+\log q\left(\textbf{Z}\right) =\mathsf{E}_{q/\textbf{Z}}p\left(\textbf{y}, \textbf{W}, \textbf{V}, \textbf{Z}|\textbf{X}, \textbf{A}, \textbf{C}, \beta\right) \propto \\
+\propto \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left(\mathsf{E}\log\pi_{ik} - \frac{\beta}{2}\left[y_i-\textbf{w}_k^{\mathsf{T}}\textbf{x}_i\right]^2\right)=\\
+= \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left(\mathsf{E}\log\pi_{ik} - \frac{\beta}{2}\left[y_{i}^{2}-2y_i\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)\textbf{x}_i\right]\right) \Rightarrow \\
+\Rightarrow p\left(z_{ik} = 1\right) = \frac{\mathsf{E}\log\pi_{ik} - \frac{\beta}{2}\left[y_{i}^{2}-2y_i\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)\textbf{x}_i\right]}{\sum_{k} p\left(z_{ik} = 1\right)}
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{W}\right)$:
+\begin{equation}
+\label{eq:st:32}
+\begin{aligned}
+\log q\left(\textbf{W}\right) =\mathsf{E}_{q/\textbf{W}}p\left(\textbf{y}, \textbf{W}, \textbf{V}, \textbf{Z}|\textbf{X}, \textbf{A}, \textbf{C}, \beta\right) \propto \\
+\propto \sum_{k=1}^{K}-\frac{1}{2}\left(\textbf{w}_k^{\mathsf{T}}\textbf{A}_k^{-1}\textbf{w}_k + \beta\sum_{i=1}^{N}\mathsf{E}z_{ik}\left[y_i -\textbf{w}_k^{\mathsf{T}}\textbf{x}_i\right]^2\right) \propto \\
+\propto -\frac{1}{2}\sum_{k=1}^{K}\left(\textbf{w}_k^{\mathsf{T}}\textbf{A}_k^{-1}\textbf{w}_k + \textbf{w}_k^{\mathsf{T}}\left[\beta\sum_{i=1}^{N}\textbf{x}_i\textbf{x}_i^{\mathsf{T}}\mathsf{E}z_{ik}\right]\textbf{w}_k -2\beta\textbf{w}_k^{\mathsf{T}}\left[\sum_{i=1}^{N}\textbf{x}_iy_i\mathsf{E}z_{ik}\right]\right) \propto \\
+\propto -\frac{1}{2}\sum_{k=1}^{K}\left(\textbf{w}_k^{\mathsf{T}}\textbf{B}_k^{-1}\textbf{w}_k - 2\textbf{w}_k^{\mathsf{T}}\textbf{m}_k \right),
+\end{aligned}
+\end{equation}
+где введены обозначения
+\begin{equation}
+\label{eq:st:33}
+\begin{aligned}
+\textbf{B}_k = \left(\textbf{A}_k^{-1} + \beta\sum_{i=1}^{N}\textbf{x}_i\textbf{x}_i^{\mathsf{T}}\mathsf{E}z_{ik}\right)^{-1} \quad \textbf{m}_k = \beta\textbf{B}_k\left(\sum_{i=1}^{N}\textbf{x}_iy_i\mathsf{E}z_{ik} \right)
+\end{aligned}
+\end{equation}
+
+Получаем  $q\left(\textbf{W}\right)$:
+\begin{equation}
+\label{eq:st:34}
+\begin{aligned}
+q(\textbf{w}_k) = N(\textbf{w}_k|\textbf{m}_k, \textbf{B}_k)
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\bm{\pi}\right)$:
+\begin{equation}
+\label{eq:st:35}
+\begin{aligned}
+\log q\left(\bm{\pi}\right) =\mathsf{E}_{q/\bm{\pi}}p\left(\textbf{y}, \textbf{W}, \textbf{V}, \textbf{Z}, \bm{\pi}|\textbf{X}, \textbf{A}, \textbf{C}, \beta\right) \propto \\
+\propto \sum_{i=1}^{N}\sum_{k=1}^{K}\log\pi_{ik}\left(\exp\left(\textbf{v}_{k}^{\mathsf{T}}\textbf{x}_i\right) - 1 +\mathsf{E}z_{ik}\right) \Rightarrow \bm{\pi}_i \sim \text{Dir}\left(\bm{\pi}_i|\bm{\mu}_i+\bm{\gamma}_i\right), \qquad \gamma_{ik} = \mathsf{E}z_{ik}
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{V}\right)$:
+\begin{equation}
+\label{eq:st:36}
+\begin{aligned}
+\log q\left(\textbf{V}\right) =\mathsf{E}_{q/\textbf{V}}p\left(\textbf{y}, \textbf{W}, \textbf{V}, \textbf{Z}, \bm{\pi}|\textbf{X}, \textbf{A}, \textbf{C}, \beta\right) \propto \\
+\propto \sum_{k=1}^{K}-\frac{1}{2}\left(\textbf{v}_k^{\mathsf{T}}\textbf{C}_k^{-1}\textbf{v}_k + \sum_{i=1}^{N}\mathsf{E}\log\pi_{ik}\left[\exp\left(\textbf{v}_{k}^{\mathsf{T}}\textbf{x}_i\right) - 1\right]\right)
+\end{aligned}
+\end{equation}
+
+Сделаем М-шаг
+
+\paragraph{Линейная регрессия без prior.} Рассматривается следующая вероятностная модель:
+\begin{enumerate}
+	\item one
+	\item two
+\end{enumerate}
+
+
+
+\section{Вычислительный эксперимент}
+
+\section{Заключение}
+
+\begin{thebibliography}{99}
+
+\end{thebibliography}
+
+\end{document}
+
