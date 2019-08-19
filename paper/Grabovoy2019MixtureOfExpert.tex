@@ -36,7 +36,7 @@
 \newcommand*{\No}{No.}
 \begin{document}
 
-\title{\bf Смесь экспертов\thanks{Работа выполнена при поддержке РФФИ и правительства РФ.}}
+\title{\bf Анализ выбора априорного распределения для смеси экспертов \thanks{Работа выполнена при поддержке РФФИ и правительства РФ.}}
 \date{}
 \author{}
 \maketitle
@@ -49,10 +49,10 @@
 
 {\centering\begin{quote}
 \textbf{Аннотация:} 
-
+Данная работа посвящен анализу свойств смеси экспертов в зависимости от выбора априорного распределения. Предлагается проанализировать свойства моделей в случае, когда выбрано информативное и не информативное априорное распределения на веса параметров каждого эксперта. В качестве экспертов рассматриваются линейные модели, а в качестве гипермодели рассматривается нейросеть с функцией softmax на последнем слое. В качестве базовой задачи рассматривается задача поиска окружностей на картинке. Предполагается, что каждой картинке соответсвует свой эксперт. В качестве данных рассматриваются синтетически сгенерированные окружности с разным уровнем шума. Предлагается сравнить устойчивость к шуму мультимомделей с априорными знаниями и без них.
 
 \smallskip
-\textbf{Ключевые слова}: ; .
+\textbf{Ключевые слова}: смесь экспертов; байесовский выбор модели; априорное распределение.
 
 \smallskip
 \textbf{DOI}: 00.00000/00000000000000
@@ -60,6 +60,74 @@
 }
 
 \section{Введение}
+В настоящее время в разных задач анализа данных присутствует необходимость обработки поступающих данных локально. 
+
+Мультимодели показывают отличные результаты во многих задачах. Классическими методами являются беггинг и градиентный бустинг~\cite{Tianqi2016}, случайный лес~\cite{Ishwaran2012}. Более современный подход к мультимоделированию~\cite{Yuksel2012} предполагает, что вклад каждой модели в ответ должен зависеть от конкретного объекта. Смесь экспертов базируется на понятии шлюзовой функции, которая определяет значимость предсказания каждого эксперта --- отдельной модели. В качестве шлюзовой функции выступает: softmax--регрессия, процесс Дирихле~\cite{Edward2002}, нейронная сеть~\cite{Shazeer2017} с softmax на последнем слое.
+
+Несмотря на значимые успехи мультимоделей, они имеют ряд недостатков. Данные недостатки связаны с тем, что сходимость локальных моделей сильно зависит от начальной инициализации параметров. Для улучшения сходимости предлагается использовать априорные знание о данных.
+
+\begin{figure}[h!t]\center
+\includegraphics[width=1\textwidth]{results/statment}
+\caption{Пример изображений с окружностями с разным уровнем шума: a) окружности без шума; b) окружности с зашумленным радиусом; c) окружности с зашумленным радиусом, а также с равномерным шумом по всему изображению}
+\label{example:1}
+\end{figure}
+
+В данной работе предлагается исследовать, как влияют априорные знания на сходимость мультимодели. Для данного исследования решается задача поиска окружностей на биноризованной  картинке --- где каждый пиксель закрашен в один из двух цветов. Пример картинок показан на рис.~\ref{example:1}. Предлагается рассмотреть как ведет себя модель с априорными знанием и без них в случае картинок с разным уровнем шума. В данной работе в качестве отдельных экспертов рассматриваются линейные модели --- каждая модель отвечает своей окружности. В качестве шлюзовой функции рассматривается двухслойная нейронная сеть.
+
+
+
+\section{Постановка задачи нахождения параметров окружностей}
+Задано бинарное изображение:
+\begin{equation}
+\label{eq:st:cr:1}
+\begin{aligned}
+\textbf{M} \in \{0,1\}^{m_1 \times m_2},
+\end{aligned}
+\end{equation}
+где $0$ отвечает белой точке --- фону, $1$ --- черная точке изображения.
+
+Используя изображения $\textbf{M}$ строится выборка $\textbf{C}$, элементами которой являются координаты~$x_i, y_i$ черных точек на картинке:
+\begin{equation}
+\label{eq:st:cr:2}
+\begin{aligned}
+\textbf{C} \in  \mathbb{R}^{N \times 2},
+\end{aligned}
+\end{equation}
+
+где $N$ --- количество черных точек на изображении $\textbf{M}$.
+
+Пусть $x_0, y_0$ --- центр окружности, которую нужно найти на бинарной картинке $\textbf{M}$, а $r$ ее радиус. Тогда элементы выборки $\textbf{C}$ должны удовлетворять уравнению окружности:
+\begin{equation}
+\label{eq:st:cr:3}
+\begin{aligned}
+\left(x_i - x_0\right)^{2}+\left(y_i-y_0\right)^2 = r^2.
+\end{aligned}
+\end{equation}
+
+Раскрыв скобки получим следующие уравнение:
+\begin{equation}
+\label{eq:st:cr:4}
+\begin{aligned}
+(2x_0)\cdot x_i + (2y_0)\cdot y_i+(r^2-x_0^2-y_0^2)\cdot1 = x_{i}^2 + y_{i}^2.
+\end{aligned}
+\end{equation}
+
+Получаем следующую задачу линейной регрессии для нахождения параметров окружности:
+\begin{equation}
+\label{eq:st:cr:5}
+\begin{aligned}
+\textbf{X}\textbf{w} \approx \textbf{Y},  \quad \textbf{X} = \textbf{C}\times \textbf{1}, \quad \textbf{Y} = \{x^2+y^2| \forall x,y \in \textbf{C}\},
+\end{aligned}
+\end{equation}
+где найденые параметры линейной регрессии $\textbf{w} = \{w_1, w_2, w_3\}$ восстанавливают параметры окружности:
+\begin{equation}
+\label{eq:st:cr:6}
+\begin{aligned}
+x_0 = \frac{w_1}{2}, \quad y_0 = \frac{w_2}{2}, \quad r = \sqrt[]{w_3+x_{0}^{2}+y_{0}^{2}}.
+\end{aligned}
+\end{equation}
+
+Данное решение позволяет искать параметры единственной окружности на рисунке. В случае, когда на картинке несколько окружностей предлагается использовать мультимодель, где в качестве каждой модели рассматривается единственная линейная модель, которая отвечает одной окружности на рисунке. В качестве мультимодели рассматривается смесь экспертов.
 
 \section{Постановка задачи смеси экспертов}
 
@@ -90,7 +158,7 @@
 \begin{equation}
 \label{eq:st:3}
 \begin{aligned}
-p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) &= \prod_{i=1}^{N}\prod_{k=1}^{K}\left[\pi_{k}\left(\textbf{x}_i,\textbf{V}\right)p_k\left(y_i|\textbf{w}_{k}, \textbf{x}_i\right)\right]^{z_{ik}}\prod_{k=1}^{K}p^{k}\left(\textbf{w}_{k}|\textbf{A}_{k}\right)
+p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \prod_{i=1}^{N}\prod_{k=1}^{K}\left[\pi_{k}\left(\textbf{x}_i,\textbf{V}\right)p_k\left(y_i|\textbf{w}_{k}, \textbf{x}_i\right)\right]^{z_{ik}}\prod_{k=1}^{K}p^{k}\left(\textbf{w}_{k}|\textbf{w}^{0}_{k}, \textbf{A}_{k}\right)
 \end{aligned}
 \end{equation}
 
@@ -98,8 +166,8 @@ p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\rig
 \begin{equation}
 \label{eq:st:4}
 \begin{aligned}
-\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) + \log p_k\left(y_i|\textbf{w}_{k}, \textbf{x}_{i}\right)\right] +\\
-&+ \sum_{k=1}^{K}\log p^{k}\left(\textbf{w}_k|\textbf{A}_k\right)
+\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) + \log p_k\left(y_i|\textbf{w}_{k}, \textbf{x}_{i}\right)\right] +\\
+&+ \sum_{k=1}^{K}\log p^{k}\left(\textbf{w}_{k}|\textbf{w}^{0}_{k}, \textbf{A}_{k}\right)
 \end{aligned}
 \end{equation}
 
@@ -109,7 +177,7 @@ p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\rig
 \begin{equation}
 \label{eq:st:5}
 \begin{aligned}
-\log q\left(\textbf{Z}\right) &= \mathsf{E}_{q/\textbf{Z}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) \\
+\log q\left(\textbf{Z}\right) &= \mathsf{E}_{q/\textbf{Z}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) \\
 p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) + \mathsf{E}\log p_{k}\left(y_i|\textbf{w}_k, \textbf{A}_k\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) + \mathsf{E}\log p_{k'}\left(y_i|\textbf{w}_k', \textbf{A}_k'\right)\right)}
 \end{aligned}
 \end{equation}
@@ -118,9 +186,9 @@ p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \te
 \begin{equation}
 \label{eq:st:6}
 \begin{aligned}
-\log q\left(\textbf{W}\right) &= \mathsf{E}_{q/\textbf{W}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) \\
+\log q\left(\textbf{W}\right) &= \mathsf{E}_{q/\textbf{W}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) \\
 &= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_{k}\left(\textbf{x}_{i, \textbf{V}}\right) + \log p_{k}\left(y_{i}\left(y_{i}|\textbf{w}_{k}, \textbf{x}_i\right)\right)\right] + \\
-&+ \sum_{k=1}^{K}\log p^{k}\left(\textbf{w}_{k}, \textbf{A}_{k}\right)
+&+ \sum_{k=1}^{K}\log p^{k}\left(\textbf{w}_{k}|\textbf{w}^{0}_{k}, \textbf{A}_{k}\right)
 \end{aligned}
 \end{equation}
 
@@ -128,9 +196,9 @@ p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \te
 \begin{equation}
 \label{eq:st:7}
 \begin{aligned}
-\mathsf{E}_{q} p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) &= \mathcal{F}\left(\textbf{V}, \textbf{A}\right) \\
-\mathcal{F}\left(\textbf{V}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) + \mathsf{E}\log p_{k}\left(y_i|\textbf{w}_{k}, \textbf{x}_{i}\right)\right] \\
-&+ \sum_{k=1}^{K}\mathsf{E}\log p_{k}\left(\textbf{w}_{k}|\textbf{A}_k\right)
+\mathsf{E}_{q} p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right) \\
+\mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) + \mathsf{E}\log p_{k}\left(y_i|\textbf{w}_{k}, \textbf{x}_{i}\right)\right] \\
+&+ \sum_{k=1}^{K}\mathsf{E}\log p_{k}\left(\textbf{w}_{k}|\textbf{w}^{0}_{k}, \textbf{A}_{k}\right)
 \end{aligned}
 \end{equation}
 
@@ -138,159 +206,210 @@ p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \te
 \begin{equation}
 \label{eq:st:8}
 \begin{aligned}
-\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}\right)}{\partial \textbf{A}^{-1}} = 0 
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right)}{\partial \textbf{A}^{-1}} = 0 
 \end{aligned}
 \end{equation}
 
-Найдем $\textbf{V}$:
-
-Аналитически решение не ищется, поэтому воспользуемся градиентным спуском для максимизации правдоподобия модели:
+Найдем $\textbf{V}$ из условия:
 \begin{equation}
 \label{eq:st:9}
 \begin{aligned}
-\textbf{V}^{j+1} &= \textbf{V}^{j} + \alpha\frac{\partial \mathcal{F}\left(\textbf{W}, \textbf{V}^{j}, \beta\right)}{\partial \textbf{V}} 
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right)}{\partial \textbf{V}} = 0 
 \end{aligned}
 \end{equation}
 
-\subsection{Случай $p_k\left(y_i|\textbf{X}, \textbf{w}_k\right) = \text{N}\left(y_i|\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_i, \beta^{-1}\right)$}
-
-\paragraph{E-step}~
-
-Для нахождения $q\left(\textbf{Z}\right)$ требуется:
+Найдем $\textbf{W}^{0}$ из условия:
 \begin{equation}
 \label{eq:st:10}
 \begin{aligned}
-\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_k, \textbf{A}_k\right) &= -\frac{\beta}{2}\left(y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)\textbf{x}_{i}\right) + \frac{1}{2}\left(\log\beta - \log2\pi\right)\\
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right)}{\partial \textbf{W}^{0}} = 0 
 \end{aligned}
 \end{equation}
 
-Найдем $q\left(\textbf{w}_{k}\right)$:
+\subsection{Случай линейной регресионной модели}
+Рассмотрим следующий случай распределений:
+\begin{enumerate}
+	\item $p_{k}\left(y_{i}|\textbf{w}_{k}, \textbf{x}_{i}\right) = \text{N}\left(y_{i}|\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}, \beta^{-1}\right)$
+	\item $p^{k}\left(\textbf{w}_{k}|\textbf{w}^{0}_{k}, \textbf{A}_{k}\right) = \text{N}\left(\textbf{w}_{k}|\textbf{w}^{0}_{k}, \textbf{A}_{k}\right)$
+	\item $\bm{\pi}\left(\textbf{x}_{i}, \textbf{V}\right) = \text{softmax}\left(\textbf{F}\left(\textbf{x}_{i}, \textbf{V}\right)\right),$ где $F : \mathbb{R}^{n}\times\mathbb{R}^{V}\to \mathbb{R}^{K}$ --- нейросеть, V --- число параметров нейросети. 
+\end{enumerate}
+
+
+Правдоподобие модели:
 \begin{equation}
-\label{eq:st:11}
+\label{eq:st:lin:1}
 \begin{aligned}
-\log q\left(\textbf{w}_{k}\right) &\propto -\frac{1}{2}\left(\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} +\beta \sum_{i=1}^{N}\mathsf{E}z_{ik}\left[y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]^{2}\right) \propto\\
-&\propto -\frac{1}{2}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)^{\mathsf{T}}\textbf{B}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)
+p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \prod_{i=1}^{N}\prod_{k=1}^{K}\left[\pi_{k}\left(\textbf{x}_i,\textbf{V}\right)\text{N}\left(y_i|\textbf{w}_{k}, \textbf{x}_i\right)\right]^{z_{ik}}\prod_{k=1}^{K}\text{N}\left(\textbf{w}_{k}|\textbf{w}^{0}_{k}, \textbf{A}_{k}\right)
 \end{aligned}
 \end{equation}
-где введены обозначения:
+
+
+Логарифм правдоподобия модели:
 \begin{equation}
-\label{eq:st:12}
+\label{eq:st:lin:2}
 \begin{aligned}
-\textbf{B}_{k} = \left(\textbf{A}_{k}^{-1} + \beta\sum_{i=1}^{N}\textbf{x}_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}z_{ik}\right)^{-1}, \qquad \textbf{m}_{k} = \beta\textbf{B}_{k}\left(\sum_{i=1}^{N}\textbf{x}_{i}y_{i}\mathsf{E}z_{ik}\right).
+\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) - \frac{\beta}{2}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] +\\
+&+ \sum_{k=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right) + \frac{1}{2}\log\det\textbf{A}^{-1}_{k} - \frac{n}{2}\log2\pi\right]
 \end{aligned}
 \end{equation}
-
-\paragraph{M-step}~
-\begin{equation}
-\label{eq:st:13}
-\begin{aligned}
-\mathsf{E}_{q} p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}, \beta\right) &= \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right). \\
-\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_{k}, \textbf{x}_{i}\right) &= -\frac{\beta}{2}\left(y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)\textbf{x}_{i}\right) + \frac{1}{2}\left(\log\beta - \log2\pi\right)\\
-\mathsf{E}\log p_{k}\left(\textbf{w}_{k}|\textbf{A}_{k}\right) &= -\frac{1}{2}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} + \frac{1}{2}\log\det\textbf{A}_{k}^{-1} - \frac{n}{2}\log2\pi
-\end{aligned}
-\end{equation}
-
-Найдем $\beta$:
-\begin{equation}
-\label{eq:st:14}
-\begin{aligned}
-\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \beta} &= \sum_{k=1}^{K}\sum_{i=1}^{N}\left(\frac{1}{\beta}\mathsf{E}z_{ik}-\frac{1}{2}\mathsf{E}z_{ik}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\right) = 0\\
-\frac{1}{\beta}&=\frac{1}{N}\sum_{i=1}^{N}\sum_{k=1}^{K}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\mathsf{E}z_{ik}
-\end{aligned}
-\end{equation}
-
-Найдем $\textbf{A}$:
-\begin{equation}
-\label{eq:st:15}
-\begin{aligned}
-\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \textbf{A}^{-1}} &= \frac{1}{2}\textbf{A}_{k} - \frac{1}{2}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} = 0 \Rightarrow \textbf{A}_{k}^{new} = \text{diag}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)
-\end{aligned}
-\end{equation}
-
-Найдем $\textbf{V}$:
-
-Аналитически решение не ищется, поэтому воспользуемся градиентным спуском для максимизации правдоподобия модели:
-\begin{equation}
-\label{eq:st:16}
-\begin{aligned}
-\textbf{V}^{j+1} &= \textbf{V}^{j} + \alpha\frac{\partial \mathcal{F}\left(\textbf{W}, \textbf{V}^{j}, \beta\right)}{\partial \textbf{V}} 
-\end{aligned}
-\end{equation}
-
-\subsection{Случай $p_k\left(y_i|\textbf{X}, \textbf{w}_k\right) = \text{Exp}\left(y_{i}-\textbf{w}_{k}^{\mathsf{E}}\textbf{x}_{i}|\frac{\beta}{2}\right)$}
 
 \paragraph{E-step}~
 
-Для нахождения $q\left(\textbf{Z}\right)$ требуется:
+Найдем $q\left(\textbf{Z}\right)$:
 \begin{equation}
-\label{eq:st:17}
+\label{eq:st:lin:3}
 \begin{aligned}
-\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_k, \textbf{A}_k\right) &= \log\frac{\beta}{2} -\frac{\beta}{2}\left(y_{i}-\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)
+\log q\left(\textbf{Z}\right) &= \mathsf{E}_{q/\textbf{Z}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right)  \propto\\
+&\propto \sum_{i+1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(y_{i}^{2} -\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right) + \frac{1}{2}\log\frac{\beta}{2\pi}\right]\\
+p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{T}\textbf{w}_{k}\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\textbf{w}_{k'}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{T}\textbf{w}_{k'}\right) \right)}
 \end{aligned}
 \end{equation}
 
-Найдем $q\left(\textbf{w}_{k}\right)$:
+Найдем $q\left(\textbf{W}\right)$:
 \begin{equation}
-\label{eq:st:18}
+\label{eq:st:lin:4}
 \begin{aligned}
-\log q\left(\textbf{w}_{k}\right) &\propto -\frac{1}{2}\left(\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} +\frac{\beta}{2} \sum_{i=1}^{N}\mathsf{E}z_{ik}\left[y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\right) \propto\\
-&\propto -\frac{1}{2}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)
+\log q\left(\textbf{W}\right) &= \mathsf{E}_{q/\textbf{W}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) \\
+&= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_{k}\left(\textbf{x}_{i, \textbf{V}}\right) - \frac{\beta}{2}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] + \\
+&+ \sum_{k=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right) + \frac{1}{2}\log\det\textbf{A}^{-1}_{k} - \frac{n}{2}\log2\pi\right] \\
+&= \sum_{k=1}^{K}\left[\textbf{w}_{k}^{\mathsf{T}}\left(\textbf{A}_{k}^{-1}\textbf{w}_{k}^{0}+\beta\sum_{i=1}^{N}\textbf{x}_{i}y_{i}\mathsf{E}z_{ik}\right)-\frac{1}{2}\textbf{w}_{k}^{\mathsf{T}}\left(\textbf{A}_{k}^{-1}+\beta\sum_{i=1}^{N}\textbf{x}_{i}\textbf{x}_{i}^{\mathsf{T}}\right)\textbf{w}_{k}\right]
 \end{aligned}
 \end{equation}
-где введено обозначения:
+
+Получаем распределение параметров:
 \begin{equation}
-\label{eq:st:19}
+\label{eq:st:lin:5}
 \begin{aligned}
-\textbf{m}_{k} = \frac{\beta}{2}\textbf{A}_{k}\left(\sum_{i=1}^{N}\textbf{x}_{i}\mathsf{E}z_{ik}\right).
+q\left(\textbf{w}_{k}\right) = \text{N}\left(\textbf{w}_{k}| \textbf{m}_{k}, \textbf{B}_k\right), 
+\end{aligned}
+\end{equation}
+где введены обозначения
+\begin{equation}
+\label{eq:st:lin:6}
+\begin{aligned}
+\textbf{m}_{k} = \textbf{B}_{k}\left(\textbf{A}_{k}^{-1}\textbf{w}_{k}^{0}+\beta\sum_{i=1}^{N}\textbf{x}_{i}y_{i}\mathsf{E}z_{ik}\right) \qquad \textbf{B}_{k} = \left(\textbf{A}_{k}^{-1}+\beta\sum_{i=1}^{N}\textbf{x}_{i}\textbf{x}_{i}^{\mathsf{T}}\right)^{-1}
 \end{aligned}
 \end{equation}
 
 \paragraph{M-step}~
 \begin{equation}
-\label{eq:st:20}
+\label{eq:st:lin:6}
 \begin{aligned}
-\mathsf{E}_{q} p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}, \beta\right) &= \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right). \\
-\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_{k}, \textbf{x}_{i}\right) &= \log\frac{\beta}{2} -\frac{\beta}{2}\left(y_{i}-\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)\\
-\mathsf{E}\log p_{k}\left(\textbf{w}_{k}|\textbf{A}_{k}\right) &= -\frac{1}{2}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} + \frac{1}{2}\log\det\textbf{A}_{k}^{-1} - \frac{n}{2}\log2\pi
+\mathsf{E}_{q} \log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right) \\
+\mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) - \frac{\beta}{2}\mathsf{E}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] +\\
+&+ \sum_{k=1}^{K}\left[-\frac{1}{2}\mathsf{E}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right) + \frac{1}{2}\log\det\textbf{A}^{-1}_{k} - \frac{n}{2}\log2\pi\right]
 \end{aligned}
 \end{equation}
 
-Найдем $\beta$:
+Найдем $\textbf{A}$ из условия:
 \begin{equation}
-\label{eq:st:21}
+\label{eq:st:lin:7}
 \begin{aligned}
-\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \beta} &= \sum_{k=1}^{K}\sum_{i=1}^{N}\mathsf{E}z_{ik}\left[\frac{1}{\beta} - \frac{y_i - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}}{2}\right] = 0\\
-\frac{1}{\beta} &= \frac{1}{2N}\sum_{i=1}^{N}\sum_{k=1}^{K}\left(y_{i}-\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)\mathsf{E}z_{ik}
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}_{k}\right)}{\partial \textbf{A}^{-1}} =  \frac{1}{2}\textbf{A}_{k} - \frac{1}{2}\mathsf{E}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{T} = 0 
 \end{aligned}
 \end{equation}
 
-Найдем $\textbf{A}$:
+Получаем $\textbf{A}$:
 \begin{equation}
-\label{eq:st:22}
+\label{eq:st:lin:8}
 \begin{aligned}
-\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \textbf{A}^{-1}  }&= \frac{1}{2}\textbf{A}_{k} - \frac{1}{2}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} = 0 \Rightarrow \textbf{A}_{k}^{new} = \text{diag}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)
+\textbf{A}_{k} = \mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} - 2\textbf{w}_{k}^{0}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}} + \textbf{w}_{k}^{0}\textbf{w}_{k}^{0\mathsf{T}} 
 \end{aligned}
 \end{equation}
-
 
 Найдем $\textbf{V}$:
 
 Аналитически решение не ищется, поэтому воспользуемся градиентным спуском для максимизации правдоподобия модели:
 \begin{equation}
-\label{eq:st:23}
+\label{eq:st:lin:9}
 \begin{aligned}
 \textbf{V}^{j+1} &= \textbf{V}^{j} + \alpha\frac{\partial \mathcal{F}\left(\textbf{W}, \textbf{V}^{j}, \beta\right)}{\partial \textbf{V}} 
 \end{aligned}
 \end{equation}
 
+Найдем $\textbf{W}^{0}$ из условия:
+\begin{equation}
+\label{eq:st:lin:10}
+\begin{aligned}
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}\right)}{\partial \textbf{w}_{k}^{0}} = -2\textbf{A}_{k}^{-1}\mathsf{E}\textbf{w}_{k} + 2\textbf{A}_{k}^{-1}\textbf{w}_{k}^{0}=0
+\end{aligned}
+\end{equation}
+
+Получаем $\textbf{W}^{0}$:
+\begin{equation}
+\label{eq:st:lin:11}
+\begin{aligned}
+\textbf{w}_{k}^{0} = \mathsf{E}\textbf{w}_{k}
+\end{aligned}
+\end{equation}
 
 \section{Вычислительный эксперимент}
+\begin{figure}[h!t]\center
+\includegraphics[width=1\textwidth]{results/experiment_synthetic}
+\caption{Результат работы мультимодели в зависимости от априорных знаний и в зависимости от уровня шума: a) модель с априорными знаниями, окружности без шума; b) модель с априорными знаниями, окружности с зашумленным радиусом; c) модель с априорными знаниями, окружности с зашумленным радиусом, а также с равномерным шумом по всему изображению; d) модель без априорных знаний, окружности без шума; f) модель без априорных знаний, окружности с зашумленным радиусом; g) модель без априорных знаний, окружности с зашумленным радиусом, а также с равномерным шумом по всему изображению}
+\label{experiment:1}
+\end{figure}
+Вычислительный эксперимент проводится на синтетической выборке, которая получена при помощи генерации двух концентрических окружностей с разным уровнем шума.
+
+Предлагается сравнить две разные постановки задачи смеси экспертов: в случае когда используются априорные знания об картинке и в случае когда априорные знания отсутствуют.
+
+В качестве информативного априорного знания выступает, то, что предполагается что вектора параметров каждой модели имеют следующие распределения:
+\begin{equation}
+\label{eq:ce:1}
+\begin{aligned}
+\text{N}\left(\textbf{w}_1|\textbf{w}^{0}_{1}, \textbf{I}\right), \quad \text{N}\left(\textbf{w}_2|\textbf{w}^{0}_{2}, \textbf{I}\right),
+\end{aligned}
+\end{equation}
+где $\textbf{w}^{0}_1 = [0, 0, 0.1],\ \textbf{w}^{0}_2 = [0, 0, 5]$, что указывает, на то, что известно о концентричности окружностей, а также что у них радиусы различны.
+
+\begin{table}[h!t]
+\begin{center}
+\caption{Результаты работы мультимоделей}
+\label{tb:ce:1}
+\begin{tabular}{|c|c|c|c|}
+\hline
+	Мультимодель & Without Noise& Noise near circle& Uniform noise\\
+	\hline
+	\multicolumn{1}{|l|}{With prior}
+	& $99/100$& $97/100$& $95/100$\\
+	\hline
+	\multicolumn{1}{|l|}{Without prior}
+	& $68/100$& $23/100$& $7/100$\\
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+На рис.~\ref{experiment:1} показан случайный результаты работы мультимоделей с априорными знаниями и без них. На всех картинках обе модели работала $30$ итераций. Так-как сходимость мултимодели очень сильно зависит от начальной инициализации, также был проведен эксперперимент с множественным запуском мултимодели на одной и той же картиинке. Обе модели на каждой картинке запускались по $100$ раз. В таб.~\ref{tb:ce:1} показано сколько мультимоделей правильно отыскали обе окружности на рисунке. Как видно мультимодель с использованием априорных знаний является более стабильной, чем мультимодель, которая не использует никаких априорных знаний.
+
+
 
 \section{Заключение}
+В данной работе проведено сравнение мультимоделей в случае, когда каждая модель имела априорные знания и в случае, когда априорных знаний не было. В качестве данных использовались изображения концентрических окружностей с разным уровнем шума. Для поиска окружностей использовались линейные модели. В качестве шлюзовой функции использовалась двухслойная нейросеть.
+
+Как показано в эксперименте в случае, когда введены априорные знания на линейные модели, мультимодель является более устойчивой к шуму. Также в случае задания априорных знаний моделей, мультимодель менее зависит от начальной инициализации, что также позволяет сказать, что модель является более устойчивой к начальной инициализации.
+
+В дальнейшем планируется улучшить мультимодель при помощи задания априорных знаний на шлюзовую функцию.
 
 \begin{thebibliography}{99}
+\bibitem{Tianqi2016}
+	\textit{Chen Tianqi, Guestrin Carlos} XGBoost: A Scalable Tree Boosting System~// KDD ’16 Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. 2016.
+	
+\bibitem{Ishwaran2012}
+	\textit{Chen Xi, Ishwaran Hemant} Random Forests for Genomic Data Analysis~// Genomics. 2012. Issues. 99, No 6. pp. 323--329.
 
-\end{thebibliography}
+\bibitem{Yuksel2012}
+	\textit{Yuksel Seniha Esen, Wilson Joseph N., Gader Paul D} Twenty Years of Mixture of Experts~// IEEE Transactions on Neural Networks and Learning Systems. 2012. Issues. 23, No 8. pp. 1177–1193.
+
+\bibitem{Shazeer2017}
+	\textit{Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz} Outrageously large neural networks: the sparsely-gated mixture-of-experts layer~// ICLR, 2017.
+
+\bibitem{Edward2002}
+	\textit{Rasmussen Carl Edward, Ghahramani Zoubin} Infinite Mixtures of Gaussian Process Experts~// Advances in Neural Information Processing Systems 14. 2002. pp. 881–888.
+
+
+ \end{thebibliography}
 
 \end{document}
 

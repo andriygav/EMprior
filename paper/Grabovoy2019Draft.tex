@@ -448,6 +448,227 @@ q(\textbf{w}_k) = N(\textbf{w}_k|\textbf{m}_k, \textbf{B}_k)
 	\item two
 \end{enumerate}
 
+\section{Постановка задачи смеси экспертов}
+
+Задана выборка:
+\begin{equation}
+\label{eq:st:1}
+\begin{aligned}
+\textbf{X} \in \mathbb{R}^{N \times n},
+\end{aligned}
+\end{equation}
+где~$N$~---~количество объектов в выборке, а~$n$~---~размерность признакового пространства.
+
+\begin{definition}
+Смесь экспертов~---~мультимодель, определяющая правдоподобие каждой $\pi_k$ каждой модели $\textbf{f}_k$ на объекте $\textbf{x}$ на основе его признакового опсиания.
+
+\begin{equation}
+\label{eq:st:2}
+\begin{aligned}
+\hat{\textbf{f}} = \sum_{k=1}^{K}\pi_{k}\textbf{f}_k, \qquad \pi_{k}\left(\textbf{x}, \textbf{V}\right):\mathbb{R}^{2\times n} \to [0, 1], \qquad \sum_{k=1}^{K}\pi_{k}\left(\textbf{x}, \textbf{V}\right) = 1
+\end{aligned}
+\end{equation}
+где~$\textbf{f}$~---~мультимодель, а $\textbf{f}_k$ является некоторой моделью, $\pi_k$~---~параметрическая модель.
+\end{definition}
+
+\subsection{Общий случай}
+
+Правдоподобие модели:
+\begin{equation}
+\label{eq:st:3}
+\begin{aligned}
+p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) &= \prod_{i=1}^{N}\prod_{k=1}^{K}\left[\pi_{k}\left(\textbf{x}_i,\textbf{V}\right)p_k\left(y_i|\textbf{w}_{k}, \textbf{x}_i\right)\right]^{z_{ik}}\prod_{k=1}^{K}p^{k}\left(\textbf{w}_{k}|\textbf{A}_{k}\right)
+\end{aligned}
+\end{equation}
+
+Логарифм правдоподобия модели:
+\begin{equation}
+\label{eq:st:4}
+\begin{aligned}
+\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) + \log p_k\left(y_i|\textbf{w}_{k}, \textbf{x}_{i}\right)\right] +\\
+&+ \sum_{k=1}^{K}\log p^{k}\left(\textbf{w}_k|\textbf{A}_k\right)
+\end{aligned}
+\end{equation}
+
+\paragraph{E-step}~
+
+Найдем $q\left(\textbf{Z}\right)$:
+\begin{equation}
+\label{eq:st:5}
+\begin{aligned}
+\log q\left(\textbf{Z}\right) &= \mathsf{E}_{q/\textbf{Z}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) \\
+p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) + \mathsf{E}\log p_{k}\left(y_i|\textbf{w}_k, \textbf{A}_k\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) + \mathsf{E}\log p_{k'}\left(y_i|\textbf{w}_k', \textbf{A}_k'\right)\right)}
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{W}\right)$:
+\begin{equation}
+\label{eq:st:6}
+\begin{aligned}
+\log q\left(\textbf{W}\right) &= \mathsf{E}_{q/\textbf{W}}\log p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) \\
+&= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_{k}\left(\textbf{x}_{i, \textbf{V}}\right) + \log p_{k}\left(y_{i}\left(y_{i}|\textbf{w}_{k}, \textbf{x}_i\right)\right)\right] + \\
+&+ \sum_{k=1}^{K}\log p^{k}\left(\textbf{w}_{k}, \textbf{A}_{k}\right)
+\end{aligned}
+\end{equation}
+
+\paragraph{M-step}~
+\begin{equation}
+\label{eq:st:7}
+\begin{aligned}
+\mathsf{E}_{q} p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}\right) &= \mathcal{F}\left(\textbf{V}, \textbf{A}\right) \\
+\mathcal{F}\left(\textbf{V}, \textbf{A}\right) &= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) + \mathsf{E}\log p_{k}\left(y_i|\textbf{w}_{k}, \textbf{x}_{i}\right)\right] \\
+&+ \sum_{k=1}^{K}\mathsf{E}\log p_{k}\left(\textbf{w}_{k}|\textbf{A}_k\right)
+\end{aligned}
+\end{equation}
+
+Найдем $\textbf{A}$ из условия:
+\begin{equation}
+\label{eq:st:8}
+\begin{aligned}
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}\right)}{\partial \textbf{A}^{-1}} = 0 
+\end{aligned}
+\end{equation}
+
+Найдем $\textbf{V}$:
+
+Аналитически решение не ищется, поэтому воспользуемся градиентным спуском для максимизации правдоподобия модели:
+\begin{equation}
+\label{eq:st:9}
+\begin{aligned}
+\textbf{V}^{j+1} &= \textbf{V}^{j} + \alpha\frac{\partial \mathcal{F}\left(\textbf{W}, \textbf{V}^{j}, \beta\right)}{\partial \textbf{V}} 
+\end{aligned}
+\end{equation}
+
+\subsection{Случай $p_k\left(y_i|\textbf{X}, \textbf{w}_k\right) = \text{N}\left(y_i|\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_i, \beta^{-1}\right)$}
+
+\paragraph{E-step}~
+
+Для нахождения $q\left(\textbf{Z}\right)$ требуется:
+\begin{equation}
+\label{eq:st:10}
+\begin{aligned}
+\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_k, \textbf{A}_k\right) &= -\frac{\beta}{2}\left(y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)\textbf{x}_{i}\right) + \frac{1}{2}\left(\log\beta - \log2\pi\right)\\
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{w}_{k}\right)$:
+\begin{equation}
+\label{eq:st:11}
+\begin{aligned}
+\log q\left(\textbf{w}_{k}\right) &\propto -\frac{1}{2}\left(\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} +\beta \sum_{i=1}^{N}\mathsf{E}z_{ik}\left[y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]^{2}\right) \propto\\
+&\propto -\frac{1}{2}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)^{\mathsf{T}}\textbf{B}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)
+\end{aligned}
+\end{equation}
+где введены обозначения:
+\begin{equation}
+\label{eq:st:12}
+\begin{aligned}
+\textbf{B}_{k} = \left(\textbf{A}_{k}^{-1} + \beta\sum_{i=1}^{N}\textbf{x}_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}z_{ik}\right)^{-1}, \qquad \textbf{m}_{k} = \beta\textbf{B}_{k}\left(\sum_{i=1}^{N}\textbf{x}_{i}y_{i}\mathsf{E}z_{ik}\right).
+\end{aligned}
+\end{equation}
+
+\paragraph{M-step}~
+\begin{equation}
+\label{eq:st:13}
+\begin{aligned}
+\mathsf{E}_{q} p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}, \beta\right) &= \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right). \\
+\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_{k}, \textbf{x}_{i}\right) &= -\frac{\beta}{2}\left(y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)\textbf{x}_{i}\right) + \frac{1}{2}\left(\log\beta - \log2\pi\right)\\
+\mathsf{E}\log p_{k}\left(\textbf{w}_{k}|\textbf{A}_{k}\right) &= -\frac{1}{2}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} + \frac{1}{2}\log\det\textbf{A}_{k}^{-1} - \frac{n}{2}\log2\pi
+\end{aligned}
+\end{equation}
+
+Найдем $\beta$:
+\begin{equation}
+\label{eq:st:14}
+\begin{aligned}
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \beta} &= \sum_{k=1}^{K}\sum_{i=1}^{N}\left(\frac{1}{\beta}\mathsf{E}z_{ik}-\frac{1}{2}\mathsf{E}z_{ik}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\right) = 0\\
+\frac{1}{\beta}&=\frac{1}{N}\sum_{i=1}^{N}\sum_{k=1}^{K}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\mathsf{E}z_{ik}
+\end{aligned}
+\end{equation}
+
+Найдем $\textbf{A}$:
+\begin{equation}
+\label{eq:st:15}
+\begin{aligned}
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \textbf{A}^{-1}} &= \frac{1}{2}\textbf{A}_{k} - \frac{1}{2}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} = 0 \Rightarrow \textbf{A}_{k}^{new} = \text{diag}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)
+\end{aligned}
+\end{equation}
+
+Найдем $\textbf{V}$:
+
+Аналитически решение не ищется, поэтому воспользуемся градиентным спуском для максимизации правдоподобия модели:
+\begin{equation}
+\label{eq:st:16}
+\begin{aligned}
+\textbf{V}^{j+1} &= \textbf{V}^{j} + \alpha\frac{\partial \mathcal{F}\left(\textbf{W}, \textbf{V}^{j}, \beta\right)}{\partial \textbf{V}} 
+\end{aligned}
+\end{equation}
+
+\subsection{Случай $p_k\left(y_i|\textbf{X}, \textbf{w}_k\right) = \text{Exp}\left(y_{i}-\textbf{w}_{k}^{\mathsf{E}}\textbf{x}_{i}|\frac{\beta}{2}\right)$}
+
+\paragraph{E-step}~
+
+Для нахождения $q\left(\textbf{Z}\right)$ требуется:
+\begin{equation}
+\label{eq:st:17}
+\begin{aligned}
+\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_k, \textbf{A}_k\right) &= \log\frac{\beta}{2} -\frac{\beta}{2}\left(y_{i}-\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)
+\end{aligned}
+\end{equation}
+
+Найдем $q\left(\textbf{w}_{k}\right)$:
+\begin{equation}
+\label{eq:st:18}
+\begin{aligned}
+\log q\left(\textbf{w}_{k}\right) &\propto -\frac{1}{2}\left(\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} +\frac{\beta}{2} \sum_{i=1}^{N}\mathsf{E}z_{ik}\left[y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\right) \propto\\
+&\propto -\frac{1}{2}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{m}_{k}\right)
+\end{aligned}
+\end{equation}
+где введено обозначения:
+\begin{equation}
+\label{eq:st:19}
+\begin{aligned}
+\textbf{m}_{k} = \frac{\beta}{2}\textbf{A}_{k}\left(\sum_{i=1}^{N}\textbf{x}_{i}\mathsf{E}z_{ik}\right).
+\end{aligned}
+\end{equation}
+
+\paragraph{M-step}~
+\begin{equation}
+\label{eq:st:20}
+\begin{aligned}
+\mathsf{E}_{q} p\left(\textbf{y}, \textbf{W}, \textbf{Z}|\textbf{X}, \textbf{V}, \textbf{A}, \beta\right) &= \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right). \\
+\mathsf{E}\log p_{k}\left(y_{i}|\textbf{w}_{k}, \textbf{x}_{i}\right) &= \log\frac{\beta}{2} -\frac{\beta}{2}\left(y_{i}-\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)\\
+\mathsf{E}\log p_{k}\left(\textbf{w}_{k}|\textbf{A}_{k}\right) &= -\frac{1}{2}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}}\textbf{A}_{k}^{-1}\textbf{w}_{k} + \frac{1}{2}\log\det\textbf{A}_{k}^{-1} - \frac{n}{2}\log2\pi
+\end{aligned}
+\end{equation}
+
+Найдем $\beta$:
+\begin{equation}
+\label{eq:st:21}
+\begin{aligned}
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \beta} &= \sum_{k=1}^{K}\sum_{i=1}^{N}\mathsf{E}z_{ik}\left[\frac{1}{\beta} - \frac{y_i - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}}{2}\right] = 0\\
+\frac{1}{\beta} &= \frac{1}{2N}\sum_{i=1}^{N}\sum_{k=1}^{K}\left(y_{i}-\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)\mathsf{E}z_{ik}
+\end{aligned}
+\end{equation}
+
+Найдем $\textbf{A}$:
+\begin{equation}
+\label{eq:st:22}
+\begin{aligned}
+\frac{\partial \mathcal{F}\left(\textbf{V}, \textbf{A}, \beta\right)}{\partial \textbf{A}^{-1}  }&= \frac{1}{2}\textbf{A}_{k} - \frac{1}{2}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} = 0 \Rightarrow \textbf{A}_{k}^{new} = \text{diag}\left(\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\right)
+\end{aligned}
+\end{equation}
+
+
+Найдем $\textbf{V}$:
+
+Аналитически решение не ищется, поэтому воспользуемся градиентным спуском для максимизации правдоподобия модели:
+\begin{equation}
+\label{eq:st:23}
+\begin{aligned}
+\textbf{V}^{j+1} &= \textbf{V}^{j} + \alpha\frac{\partial \mathcal{F}\left(\textbf{W}, \textbf{V}^{j}, \beta\right)}{\partial \textbf{V}} 
+\end{aligned}
+\end{equation}
 
 
 \section{Вычислительный эксперимент}
