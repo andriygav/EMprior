@@ -193,8 +193,8 @@ class RegularizeModel:
         
         for k in range(K):
             if self.ListOfModels[k].w_0 is not None:
-                temp1 = torch.inverse(torch.inverse(self.ListOfModels[k].A) - alpha*(K)*torch.diag(torch.ones_like(self.ListOfModels[k].w_0.view(-1))))
-                temp2 = torch.inverse(self.ListOfModels[k].A)@self.ListOfModels[k].W - alpha*torch.cat([self.ListOfModels[t].w_0  for t in range(K) if t==t], dim = 1).sum(dim=1).view([-1,1])
+                temp1 = torch.inverse(torch.inverse(self.ListOfModels[k].A) + alpha*(K-1)*torch.diag(torch.ones_like(self.ListOfModels[k].w_0.view(-1))))
+                temp2 = torch.inverse(self.ListOfModels[k].A)@self.ListOfModels[k].W + alpha*torch.cat([self.ListOfModels[t].w_0  for t in range(K) if k!=t], dim = 1).sum(dim=1).view([-1,1])
                 ListOfNewW0.append((temp1@temp2).detach().data[:2,:])
 #                 ListOfNewW0.append(torch.cat([self.ListOfModels[t].w_0  for t in range(K)], dim = 1).mean(dim=1).view([-1,1]).detach().data[:2,:])
             else:
