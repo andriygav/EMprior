@@ -357,6 +357,6 @@ class MixtureExpert:
         pi = torch.nn.functional.softmax(self.HyperModel(X), dim = -1).detach()
         answ = torch.cat([self.ListOfModels[k](X) for k in range(self.K)], dim = 1).detach()
         
-        return (answ*pi).sum(dim = -1).data.numpy()
+        return (answ*pi).sum(dim = -1).data.numpy(), pi.data.numpy()
 
 
