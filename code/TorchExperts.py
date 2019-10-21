@@ -75,9 +75,11 @@ class EachModelLinear:
             self.W.data = w.data.clone() + (1e-5)*torch.randn(input_dim, 1, device = self.device)
         else:
             self.w_0 = w
-
-        self.B = torch.eye(input_dim, device = self.device)
-
+        
+        if self.A is None:
+            self.B = torch.eye(input_dim, device = self.device)
+        else:
+            self.B = self.A.copy()
         
     def forward(self, input):
         return input@self.W
