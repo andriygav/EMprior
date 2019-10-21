@@ -318,12 +318,12 @@ class MixtureExpert:
         for k in range(len(self.ListOfRegularizeModel)):
             self.ListOfRegularizeModel[k].M_step(X, Y, self.pZ, self.HyperParameters)
 
-# Optimize Z(testing)
-        temp1 = torch.nn.functional.log_softmax(self.HyperModel(X), dim = -1)
-        temp2 = torch.cat([self.ListOfModels[k].LogLikeLihoodExpectation(X, Y, self.HyperParameters) for k in range(self.K)], dim = 1)
-        pZ = torch.nn.functional.softmax(temp1 + temp2, dim=-1).detach()
+# # Optimize Z(testing)
+#         temp1 = torch.nn.functional.log_softmax(self.HyperModel(X), dim = -1)
+#         temp2 = torch.cat([self.ListOfModels[k].LogLikeLihoodExpectation(X, Y, self.HyperParameters) for k in range(self.K)], dim = 1)
+#         pZ = torch.nn.functional.softmax(temp1 + temp2, dim=-1).detach()
 # Optimize HyperModel
-        self.HyperModel.M_step(X, Y, pZ, self.HyperParameters)
+        self.HyperModel.M_step(X, Y, self.pZ, self.HyperParameters)
     
 
 
