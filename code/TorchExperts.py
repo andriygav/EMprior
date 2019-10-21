@@ -8,6 +8,8 @@ from torch.utils.data import DataLoader
 
 from torch.utils.data import Dataset
 
+import math
+
 class TorchDataset(Dataset):
     def __init__(self, X, Y, device = 'cpu'):
         super(TorchDataset, self).__init__()
@@ -66,7 +68,7 @@ class EachModelLinear:
         self.regul = regul
         self.A = A
             
-        self.W = torch.randn(input_dim, 1, device = self.device)
+        self.W = (1e-5)*torch.randn(input_dim, 1, device = self.device)
         
         if w is not None:
             self.w_0 = w.clone()
@@ -119,17 +121,22 @@ class EachModelLinear:
         """
         beta = 1./(HyperParameters['beta'] + 0.000001)
         temp = X.unsqueeze(2)
+        
         if self.A is None:
             self.B = torch.inverse(((temp*Z.unsqueeze(1))@temp.transpose(2, 1)).sum(dim = 0)).detach()
             second = (X*Y*Z).sum(dim = 0).view([-1, 1])
             self.W.data = (self.B@second).view_as(self.W).detach()
         else:
-            self.B = torch.inverse(torch.inverse(self.A) + beta*((temp*Z.unsqueeze(1))@temp.transpose(2, 1)).sum(dim = 0)).detach()
-            second = (X*Y*Z).sum(dim = 0).view([-1, 1])       
+            A = self.A
+            if len(self.A.shape) == 1:
+                A = torch.diag(self.A)
+            
+            self.B = torch.inverse(torch.inverse(A) + beta*((temp*Z.unsqueeze(1))@temp.transpose(2, 1)).sum(dim = 0)).detach()
+            second = beta*(X*Y*Z).sum(dim = 0).view([-1, 1])       
             if self.w_0 is None:
-                self.W.data = (beta*(self.B@second)).view_as(self.W).detach()
+                self.W.data = ((self.B@second)).view_as(self.W).detach()
             else:
-                self.W.data = (self.B@(beta*second + torch.inverse(self.A)@self.w_0)).view_as(self.W).detach()
+                self.W.data = (self.B@(second + torch.inverse(A)@self.w_0)).view_as(self.W).detach()
         
         return
 
@@ -140,17 +147,26 @@ class EachModelLinear:
         Z is a tensor of shape [N x 1]
         HyperParameters is a dictionary
         """
+        beta = 1./(HyperParameters['beta'] + 0.000001)
+        
         if self.A is not None:
             if self.w_0 is not None:
-                self.A= (self.B+self.W@self.W.transpose(0,1) - self.w_0@self.W.transpose(0,1) - self.W@self.w_0.transpose(0,1) + self.w_0@self.w_0.transpose(0,1)).detach()
+                if len(self.A.shape) == 1:
+                    self.A= torch.diagonal(self.B+self.W@self.W.transpose(0,1) - self.w_0@self.W.transpose(0,1) - self.W@self.w_0.transpose(0,1) + self.w_0@self.w_0.transpose(0,1)).detach()
+                else:
+                    self.A= (self.B+self.W@self.W.transpose(0,1) - self.w_0@self.W.transpose(0,1) - self.W@self.w_0.transpose(0,1) + self.w_0@self.w_0.transpose(0,1)).detach()
             else:
-                self.A = (self.B+self.W@self.W.transpose(0,1)).detach()
+                if len(self.A.shape) == 1:
+                    self.A = torch.diagonal(self.B+self.W@self.W.transpose(0,1)).detach()
+                else:
+                    self.A = (self.B+self.W@self.W.transpose(0,1)).detach()
+                
         
         if self.w_0 is not None:
             if self.regul == True:
-                self.w_0.data[:3,:] = self.W.data[:3,:].clone()
+                self.w_0.data[2:,:] = self.W.data[2:,:].clone()
             else:
-                self.w_0.data = self.W
+                self.w_0.data = self.W.data.clone()
 
         return
 
@@ -183,26 +199,45 @@ class RegularizeModel:
         """
         X is a tensor of shape [N x n]
         Y is a tensor of shape [N x 1]
-        Z is a tensor of shape [N x 1]
+        Z is a tensor of shape [N x K]
         HyperParameters is a dictionary
         """
         alpha = 1./(HyperParameters['alpha']+1e-30)
+        beta = 1./(HyperParameters['beta'] + 0.000001)
         K = len(self.ListOfModels)
         
         ListOfNewW0 = []
         
         for k in range(K):
             if self.ListOfModels[k].w_0 is not None:
-                temp1 = torch.inverse(torch.inverse(self.ListOfModels[k].A) + alpha*(K-1)*torch.diag(torch.ones_like(self.ListOfModels[k].w_0.view(-1))))
-                temp2 = torch.inverse(self.ListOfModels[k].A)@self.ListOfModels[k].W + alpha*torch.cat([self.ListOfModels[t].w_0  for t in range(K) if k!=t], dim = 1).sum(dim=1).view([-1,1])
-                ListOfNewW0.append((temp1@temp2).detach().data[:2,:])
-#                 ListOfNewW0.append(torch.cat([self.ListOfModels[t].w_0  for t in range(K)], dim = 1).mean(dim=1).view([-1,1]).detach().data[:2,:])
+                if len(self.ListOfModels[k].A.shape) == 1:
+                    A_inv = torch.diag(1./self.ListOfModels[k].A)
+                else:
+                    A_inv = torch.inverse(self.ListOfModels[k].A)
+                
+                B = self.ListOfModels[k].B
+
+                temp1 = torch.inverse(A_inv \
+                                        +alpha*(K)*torch.diag(torch.ones_like(self.ListOfModels[k].w_0.view(-1))))
+                temp2 = A_inv@self.ListOfModels[k].W \
+                        + alpha*torch.cat([self.ListOfModels[t].w_0  for t in range(K) if t==t], dim = 1).sum(dim=1).view([-1,1]) 
+                
+#                 temp1 = torch.inverse(2*A_inv \
+#                                         +2*alpha*(K)*torch.diag(torch.ones_like(self.ListOfModels[k].w_0.view(-1))) \
+#                                         -2*A_inv@B@A_inv \
+#                                         +2*A_inv@B@A_inv@B@A_inv)
+#                 temp2 = 2*A_inv@self.ListOfModels[k].W \
+#                         + 2*alpha*torch.cat([self.ListOfModels[t].w_0  for t in range(K) if t==t], dim = 1).sum(dim=1).view([-1,1]) \
+#                         - (A_inv@B@A_inv@B+B@A_inv@B@A_inv)@second
+                
+    
+                ListOfNewW0.append((temp1@temp2).detach())
             else:
                 ListOfNewW0.append(None)
                 
         for k in range(K):
             if self.ListOfModels[k].w_0 is not None:
-                self.ListOfModels[k].w_0.data[:2, :] = ListOfNewW0[k]
+                self.ListOfModels[k].w_0.data[:2, :] = ListOfNewW0[k].data[:2,:]
         return
 
 
@@ -234,6 +269,7 @@ class MixtureExpert:
         else:
             self.ListOfModels = ListOfModels
         
+
         self.pZ = None
         return
         
@@ -311,4 +347,5 @@ class MixtureExpert:
         answ = torch.cat([self.ListOfModels[k](X) for k in range(self.K)], dim = 1).detach()
         
         return (answ*pi).sum(dim = -1).data.numpy()
-    
+
+
