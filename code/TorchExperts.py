@@ -24,12 +24,14 @@ class TorchDataset(Dataset):
         return self.X[index], self.Y[index]
 
 class HyperModelNN(nn.Module):
-    def __init__(self, input_dim = 20, hidden_dim = 10, output_dim = 10, device = 'cpu'):
+    def __init__(self, input_dim = 20, hidden_dim = 10, output_dim = 10, epochs=100, device = 'cpu'):
         super(HyperModelNN, self).__init__()
         
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.device = device
+        
+        self.epochs=epochs
         
         self.linear1 = nn.Linear(input_dim, hidden_dim)
         self.linear2 = nn.Linear(hidden_dim, output_dim)
@@ -51,11 +53,11 @@ class HyperModelNN(nn.Module):
     def M_step(self, X, Y, Z, HyperParameters):
         dataset = TorchDataset(X, Z, device = self.device)
         
-        for _ in range(100):
-            train_generator = DataLoader(dataset = dataset, batch_size = 16, shuffle=True)
+        for _ in range(self.epochs):
+            train_generator = DataLoader(dataset = dataset, batch_size = 128, shuffle=True)
             for it, (batch_of_x, batch_of_z) in enumerate(train_generator):
                 self.zero_grad()
-                loss = -(torch.nn.functional.log_softmax(self.forward(batch_of_x), dim = -1)*batch_of_z).sum()
+                loss = -(torch.nn.functional.log_softmax(self.forward(batch_of_x), dim = -1)*batch_of_z).mean()
                 loss.backward()
                 self.optimizer.step()
         pass
