@@ -34,7 +34,8 @@ class HyperModelNN(nn.Module):
         self.epochs=epochs
         
         self.linear1 = nn.Linear(input_dim, hidden_dim)
-        self.linear2 = nn.Linear(hidden_dim, output_dim)
+        self.linear2 = nn.Linear(hidden_dim, hidden_dim)
+        self.linear3 = nn.Linear(hidden_dim, output_dim)
         
         self.optimizer = torch.optim.Adam(self.parameters(), lr = 0.0001)
         
@@ -45,6 +46,8 @@ class HyperModelNN(nn.Module):
         out = self.linear1(out)
         out = F.relu(out)
         out = self.linear2(out)
+        out = F.relu(out)
+        out = self.linear3(out)
         return out
     
     def E_step(self, X, Y, Z, HyperParameters):
