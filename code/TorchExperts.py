@@ -76,10 +76,12 @@ class EachModelLinear:
         else:
             self.w_0 = w
         
-        if self.A is None:
-            self.B = torch.eye(input_dim, device = self.device)
-        else:
-            self.B = self.A.copy()
+        self.B = torch.eye(input_dim, device = self.device)
+        if self.A is not None:
+            if len(self.A.shape) == 1:
+                self.B.data = torch.diag(self.A).data.copy()
+            else:
+                self.B.data = self.A.data.copy()
         
     def forward(self, input):
         return input@self.W
