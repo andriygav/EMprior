@@ -38,6 +38,9 @@
 
 \usepackage{ragged2e}
 
+\usepackage{etoolbox}% http://ctan.org/pkg/etoolbox
+\AtBeginEnvironment{figure}{\setcounter{subfigure}{0}}% Resets subfigure counter at start of figure environment
+
 %----------------------------------------------------------------------------------------------------------
 \title[\hbox to 56mm{Смесь экспертов \hfill\insertframenumber\,/\,\inserttotalframenumber}]
 {Смесь экспертов}
@@ -58,9 +61,23 @@
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{План}
 	\begin{enumerate}
-		\item ЕМ--алгоритм
-		\item Смесь моделей
+		\item ЕМ--алгоритм:
+			\begin{itemize}
+				\item Классический,
+				\item Вариационный,
+			\end{itemize}
+		\item Смесь моделей:
+			\begin{itemize}
+				\item Постановка задачи,
+				\item Итерационные формулы полученные при помощи вариационного ЕМ--алгоритма,
+				\item Илюстрация сходимости,
+			\end{itemize}
 		\item Смесь экспертов
+			\begin{itemize}
+				\item Постановка задачи,
+				\item Итерационные формулы полученные при помощи вариационного ЕМ--алгоритма,
+				\item Илюстрация сходимости,
+			\end{itemize}
 	\end{enumerate}
 \end{frame}
 %----------------------------------------------------------------------------------------------------------
@@ -99,7 +116,7 @@
 			\end{equation}
 	\end{enumerate}
 	
-	Вариационный ЕМ--алгоритм (Mean Field Approximation\footnote{\url{https://github.com/andriygav/EMprior/blob/master/Lecture/Grabovoy2019MeanField.pdf}}):
+	Вариационный ЕМ--алгоритм (Mean Field Approximation\footnote[1]{\url{https://github.com/andriygav/EMprior/blob/master/Lecture/Grabovoy2019MeanField.pdf}}):
 	\begin{enumerate}
 		\item Е--шаг: 
 			\begin{equation}
@@ -208,7 +225,7 @@
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Пример 1}
 \justifying
-Итерационные формулы ЕМ--алгоритма\footnote{\url{https://github.com/andriygav/EMprior/blob/master/paper/Grabovoy2019Draft.pdf}}:
+Итерационные формулы ЕМ--алгоритма\footnote[1]{\url{https://github.com/andriygav/EMprior/blob/master/paper/Grabovoy2019Draft.pdf}}:
 	\begin{enumerate}
 		\item Е--шаг: 
 			\begin{equation}
@@ -241,7 +258,15 @@
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Пример 1}
 \justifying
-Картинки
+\begin{figure}
+	\subfloat[]{\includegraphics[height=0.35\textheight]{pictures/pi_predicftion_models}\label{sl:8:pic:1}}
+	\subfloat[]{\includegraphics[height=0.35\textheight]{pictures/parameters_models}\label{sl:8:pic:2}}
+\end{figure}
+На рис.~\ref{sl:8:pic:1} показано, что в случае смеси моделей, предсказать то, какую модель использовать в каждой точке нельзя.
+
+На рис.~\ref{sl:8:pic:2} показана зависимость векторов $\mathbf{w}_{k}$~---~параметры локальных моделей в процессе обучения.
+
+\footnotetext[1]{\url{https://github.com/andriygav/MixtureLib}}
 \end{frame}
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Смесь экспертов}
@@ -286,7 +311,7 @@
 	\begin{enumerate}
 		\item Е--шаг: 
 			\begin{equation}
-			\label{sl:3:eq:3}
+			\label{sl:6:eq:3}
 				\begin{aligned}
 					\log q\left(\textbf{Z}^{s}\right) &\propto \mathsf{E}_{q/\textbf{Z}}\log p\bigr(\mathbf{y}, \textbf{Z},\mathbf{W}|\mathbf{X}, \mathbf{V}^{s-1}, \textbf{A}^{s-1}, \textbf{W}^{0, s-1}, \beta^{s-1}\bigr)\\
 					\log q\left(\textbf{W}^{s}\right) &\propto \mathsf{E}_{q/\textbf{W}}\log p\bigr(\mathbf{y}, \textbf{Z},\mathbf{W}|\mathbf{X}, \mathbf{V}^{s-1}, \textbf{A}^{s-1}, \textbf{W}^{0, s-1}, \beta^{s-1}\bigr)
@@ -294,7 +319,7 @@
 			\end{equation}
 		\item М--шаг: 
 			\begin{equation}
-			\label{sl:3:eq:4}
+			\label{sl:6:eq:4}
 				\begin{aligned}
 					\textbf{W}^{0, s}, \textbf{A}^{s}, \beta^{s} = \arg\max_{\textbf{W}^{0}, \textbf{A}, \beta} \mathbf{E}_{q^{s}}\log p\bigr(\mathbf{y}, \textbf{Z},\mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \beta\bigr)
 				\end{aligned}
@@ -304,11 +329,11 @@
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Пример 2}
 \justifying
-Итерационные формулы ЕМ--алгоритма\footnote{\url{https://github.com/andriygav/EMprior/blob/master/paper/Grabovoy2019MixtureOfExpert.pdf}}:
+Итерационные формулы ЕМ--алгоритма\footnote[1]{\url{https://github.com/andriygav/EMprior/blob/master/paper/Grabovoy2019MixtureOfExpert.pdf}}:
 	\begin{enumerate}
 		\item Е--шаг: 
 			\begin{equation}
-			\label{sl:4:eq:1}
+			\label{sl:7:eq:1}
 				\begin{aligned}
 					&p\left(z_{ik} = 1\right) = \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\textbf{w}_{k'}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\right) \right)},\\
 					&q(\textbf{w}_k) = \mathcal{N}(\textbf{w}_k|\textbf{m}_k, \textbf{B}_k),\\
@@ -318,7 +343,7 @@
 			\end{equation}
 		\item М--шаг: 
 			\begin{equation}
-			\label{sl:4:eq:2}
+			\label{sl:7:eq:2}
 				\begin{aligned}
 					&\textbf{A}_{k} = \mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} - \textbf{w}_{k}^{0}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}} - \mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{0\mathsf{T}} + \textbf{w}_{k}^{0}\textbf{w}_{k}^{0\mathsf{T}}, \\
 					 &\frac{1}{\beta}=\frac{1}{N}\sum_{i=1}^{N}\sum_{k=1}^{K}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\mathsf{E}z_{ik},\\
@@ -331,7 +356,39 @@
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Пример 2}
 \justifying
-Картинки
+\begin{figure}
+	\subfloat[]{\includegraphics[height=0.35\textheight]{pictures/pi_predicftion_experts}\label{sl:9:pic:1}}
+	\subfloat[]{\includegraphics[height=0.35\textheight]{pictures/parameters_experts}\label{sl:9:pic:2}}
+\end{figure}
+На рис.~\ref{sl:9:pic:1} показано, что в случае смеси экспертов гипермодель предсказывает к какому классу относится каждая точка в пространстве объектов.
+
+На рис.~\ref{sl:9:pic:2} показана зависимость векторов $\mathbf{w}_{k}$~---~параметры локальных моделей в процессе обучения.
+
+\footnotetext[1]{\url{https://github.com/andriygav/MixtureLib}}
+\end{frame}
+%----------------------------------------------------------------------------------------------------------
+\begin{frame}{Сравнение результатов}
+\justifying
+\begin{figure}
+	\subfloat[Смесь Моделей]{\includegraphics[height=0.35\textheight]{pictures/pi_predicftion_models}\label{sl:10:pic:1}}
+	\subfloat[Смесь Моделей]{\includegraphics[height=0.35\textheight]{pictures/parameters_models}\label{sl:10:pic:2}}\\
+	\subfloat[Смесь Экспертов]{\includegraphics[height=0.35\textheight]{pictures/pi_predicftion_experts}\label{sl:10:pic:3}}
+	\subfloat[Смесь Экспертов]{\includegraphics[height=0.35\textheight]{pictures/parameters_experts}\label{sl:10:pic:4}}
+\end{figure}
+\footnotetext[1]{\url{https://github.com/andriygav/MixtureLib}}
+\end{frame}
+%----------------------------------------------------------------------------------------------------------
+\begin{frame}{Источники}
+\justifying
+\begin{enumerate}
+	\item Адуенко\;А.\,А., Курс лекций: Байесовский выбор моделей, 2018.
+	\item Christopher Bishop, Pattern Recognition and Machine Learning, 2016.
+	\item Yuksel Seniha Esen, Wilson Joseph N., Gader Paul D, Twenty Years of Mixture of Experts~// IEEE Transactions on Neural Networks and Learning Systems. 2012. Issues. 23, No 8. pp. 1177–1193.
+	\item Вывод вариационного ЕМ--алгоритма. \url{https://github.com/andriygav/EMprior/blob/master/Lecture/Grabovoy2019MeanField.pdf}
+	\item Вывод смеси моделей с задаными априорнымии распределениями. \url{https://github.com/andriygav/EMprior/blob/master/paper/Grabovoy2019Draft.pdf}
+	\item Вывод смеси экспертов с задаными априорнымии распределениями. \url{https://github.com/andriygav/EMprior/blob/master/paper/Grabovoy2019MixtureOfExpert.pdf}
+	\item Програмная реализация мултьтимоделей. \url{https://github.com/andriygav/MixtureLib}
+\end{enumerate}
 \end{frame}
 %----------------------------------------------------------------------------------------------------------
 
