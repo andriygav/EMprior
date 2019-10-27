@@ -1,0 +1,115 @@
+\documentclass[9pt,pdf,hyperref={unicode}]{beamer}
+\beamertemplatenavigationsymbolsempty
+
+\setbeamertemplate{blocks}[rounded=true, shadow=true]
+\setbeamertemplate{footline}[page number]
+\usepackage{multicol}
+
+\usefonttheme{serif}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath,mathrsfs,mathtext}
+\usepackage{graphicx, epsfig}
+\usepackage{caption}
+\usepackage{subfig}
+\usepackage{amsmath, bm}
+
+\usepackage{comment}
+
+\usepackage{tabularx}
+
+\usepackage{tikz}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+\usetheme{Warsaw}
+\usecolortheme{sidebartab}
+\definecolor{beamer@blendedblue}{RGB}{31,96,49}
+
+\setbeamertemplate{enumerate items}[circle]
+
+\setbeamersize{text margin left=1.5em, text margin right=1.5em}
+
+\usepackage{ragged2e}
+
+%----------------------------------------------------------------------------------------------------------
+\title[\hbox to 56mm{Смесь экспертов \hfill\insertframenumber\,/\,\inserttotalframenumber}]
+{Смесь экспертов}
+\author[Грабовой А.\ В.]{\Large Грабовой Андрей Валериевич}
+\institute{ Московский физико-технический институт\\
+Факультет управления и прикладной математики\\
+Кафедра интеллектуальных систем\\
+}
+\date{\footnotesize{\emph{Москва}\\
+ 2019 г}}
+%----------------------------------------------------------------------------------------------------------
+\begin{document}
+%----------------------------------------------------------------------------------------------------------
+\begin{frame}
+\titlepage
+\end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+\begin{frame}{Вариационный ЕМ--алгоритм}
+\justifying
+	Максимизация обоснованости:
+	\begin{equation}
+	\label{sl:1}
+		\begin{aligned}
+			\bm{\Theta} = \arg\max_{\bm{\Theta}} p\left(\textbf{y}|\textbf{X}, \bm{\Theta}\right)
+		\end{aligned}
+	\end{equation}
+	ELBO:
+	\begin{equation}
+	\label{sl:2}
+		\begin{aligned}
+			\mathcal{L}\left(q\bigr(\textbf{Z}\bigr), \bm{\Theta}\right)&= \int q\bigr(\textbf{Z}\bigr)\log\frac{p\left(\textbf{y}, \textbf{Z}|\bm{\Theta}, \textbf{X}\right)}{q\left(\textbf{Z}\right)}d\textbf{Z}\\
+			&=p\left(\textbf{y}|\textbf{X}, \bm{\Theta}\right) - \mathsf{D}_{KL}\left(q\bigr(\textbf{Z}\bigr)||p\bigr(\textbf{Z}|\textbf{y}, \textbf{X}, \bm{\Theta}\bigr)\right)
+		\end{aligned}
+	\end{equation}
+	ЕМ--алгоритм:
+	\begin{enumerate}
+		\item Е--шаг: 
+			\begin{equation}
+			\label{sl:3}
+				\begin{aligned}
+					q^{s}\bigr(\textbf{Z}\bigr) = \arg\max_{q\bigr(\textbf{Z}\bigr)\in Q} \mathcal{L}\left(q\bigr(\textbf{Z}\bigr), \bm{\Theta}^{s-1}\right)		
+				\end{aligned}
+			\end{equation}
+		\item М--шаг: 
+			\begin{equation}
+			\label{sl:4}
+				\begin{aligned}
+					\bm{\Theta}^{s} = \arg\max_{q\bigr(\textbf{Z}\bigr)\in Q} \mathcal{L}\left(q^{s}\bigr(\textbf{Z}\bigr), \bm{\Theta}\right)		
+				\end{aligned}
+			\end{equation}
+	\end{enumerate}
+	
+	Вариационный ЕМ--алгоритм (Mean Field Approximation)\footnote{\url{}}:
+	\begin{enumerate}
+		\item Е--шаг: 
+			\begin{equation}
+			\label{sl:5}
+				\begin{aligned}
+					\log q\left(\textbf{Z}_{k}^{s}\right) \propto \mathsf{E}_{q/k}\log p\left(\textbf{y}, \textbf{Z}|\textbf{X},\bm{\Theta}^{s-1}\right)
+				\end{aligned}
+			\end{equation}
+		\item М--шаг: 
+			\begin{equation}
+			\label{sl:6}
+				\begin{aligned}
+					\bm{\Theta}^{s} = \arg\max_{q^s\bigr(\textbf{Z}\bigr)\in Q} \log p\left(\textbf{y}, \textbf{Z}|\textbf{X},\bm{\Theta}\right)
+				\end{aligned}
+			\end{equation}
+	\end{enumerate}
+
+\end{frame}
+%----------------------------------------------------------------------------------------------------------
+
+\end{document} 
