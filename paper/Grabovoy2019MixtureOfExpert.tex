@@ -231,7 +231,7 @@ p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}
 \begin{aligned}
 \log q\left(\textbf{Z}\right) &= \mathsf{E}_{q/\textbf{Z}} \log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \hat{\bm{\alpha}}, \beta\bigr)  \propto\\
 &\propto \sum_{i+1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(y_{i}^{2} -\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right) + \frac{1}{2}\log\frac{\beta}{2\pi}\right]\\
-p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{T}\textbf{w}_{k}\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\textbf{w}_{k'}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{T}\textbf{w}_{k'}\right) \right)}
+p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\textbf{w}_{k'}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\right) \right)}
 \end{aligned}
 \end{equation}
 
@@ -487,7 +487,40 @@ p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \te
 
 В дальнейшем планируется улучшить мультимодель при помощи задания априорного распределения на шлюзовую функцию. Планируется рассмотреть в качестве моделей не только модели, которые описывают данные, а также модель, которая отвечает за шум в данных. Предполагается, что вероятность шума мала, поэтому важно задать априорного распределение, которое учитывало бы этот факт.
 
-\appendix
+\begin{thebibliography}{99}
+\bibitem{Tianqi2016}
+	\textit{Chen Tianqi, Guestrin Carlos} XGBoost: A Scalable Tree Boosting System~// KDD ’16 Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. 2016.
+	
+\bibitem{Ishwaran2012}
+	\textit{Chen Xi, Ishwaran Hemant} Random Forests for Genomic Data Analysis~// Genomics. 2012. Issues. 99, No 6. pp. 323--329.
+
+\bibitem{Yuksel2012}
+	\textit{Yuksel Seniha Esen, Wilson Joseph N., Gader Paul D} Twenty Years of Mixture of Experts~// IEEE Transactions on Neural Networks and Learning Systems. 2012. Issues. 23, No 8. pp. 1177–1193.
+
+\bibitem{Shazeer2017}
+	\textit{Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz} Outrageously large neural networks: the sparsely-gated mixture-of-experts layer~// ICLR, 2017.
+
+\bibitem{Edward2002}
+	\textit{Rasmussen Carl Edward, Ghahramani Zoubin} Infinite Mixtures of Gaussian Process Experts~// Advances in Neural Information Processing Systems 14. 2002. pp. 881–888.
+	
+\bibitem{Jordan1994}
+	\textit{M.~I.~Jordan} Hierarchical mixtures of experts and the EM algorithm~// Neural Comput., vol. 6, no. 2, pp. 181–214, 1994.
+	
+\bibitem{Lima2007}
+	\textit{C.~A.~M.~Lima, A.~L.~V. Coelho, F.~J.~Von~Zuben} Hybridizing mixtures of experts with support vector machines: Investigation into nonlinear dynamic systems identification~// Inf. Sci., vol. 177, no. 10, pp. 2049–2074, 2007.
+
+\bibitem{Cao2003}
+	\textit{L.~Cao} Support vector machines experts for time series forecasting~// Neurocomputing, vol. 51, pp. 321–339, Apr. 2003.
+
+\bibitem{Dempster1977}
+	\textit{A. P. Dempster, N. M. Laird and D. B. Rubin} Maximum Likelihood from Incomplete Data via the EM Algorithm~// Journal of the Royal Statistical Society. Series B (Methodological), Vol. 39, No. 1 pp. 1-38, 1977.
+	
+\bibitem{Jordan1991}
+	\textit{M.~I.~Jordan, R.~A.~Jacobs} Hierarchies of adaptive experts~// in Advances in Neural Information Processing Systems. Cambridge, MA: MIT Press, 1991, pp. 985–992.
+
+ \end{thebibliography}
+ 
+ \appendix
 
 \section{Постановка задачи нахождения параметров эллипса}\label{apendix:el}
 Задано бинарное изображение:
@@ -539,38 +572,6 @@ x_0 = \frac{w_1}{2}, \quad y_0 = -\frac{w_2}{2w_3}, \quad a^2 = w_4-\frac{w_1}{2
 
 Решение уравнения~\eqref{apendix:el:eq:5} находит параметры единственного эллипса на изображении.
 
-\begin{thebibliography}{99}
-\bibitem{Tianqi2016}
-	\textit{Chen Tianqi, Guestrin Carlos} XGBoost: A Scalable Tree Boosting System~// KDD ’16 Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. 2016.
-	
-\bibitem{Ishwaran2012}
-	\textit{Chen Xi, Ishwaran Hemant} Random Forests for Genomic Data Analysis~// Genomics. 2012. Issues. 99, No 6. pp. 323--329.
-
-\bibitem{Yuksel2012}
-	\textit{Yuksel Seniha Esen, Wilson Joseph N., Gader Paul D} Twenty Years of Mixture of Experts~// IEEE Transactions on Neural Networks and Learning Systems. 2012. Issues. 23, No 8. pp. 1177–1193.
-
-\bibitem{Shazeer2017}
-	\textit{Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz} Outrageously large neural networks: the sparsely-gated mixture-of-experts layer~// ICLR, 2017.
-
-\bibitem{Edward2002}
-	\textit{Rasmussen Carl Edward, Ghahramani Zoubin} Infinite Mixtures of Gaussian Process Experts~// Advances in Neural Information Processing Systems 14. 2002. pp. 881–888.
-	
-\bibitem{Jordan1994}
-	\textit{M.~I.~Jordan} Hierarchical mixtures of experts and the EM algorithm~// Neural Comput., vol. 6, no. 2, pp. 181–214, 1994.
-	
-\bibitem{Lima2007}
-	\textit{C.~A.~M.~Lima, A.~L.~V. Coelho, F.~J.~Von~Zuben} Hybridizing mixtures of experts with support vector machines: Investigation into nonlinear dynamic systems identification~// Inf. Sci., vol. 177, no. 10, pp. 2049–2074, 2007.
-
-\bibitem{Cao2003}
-	\textit{L.~Cao} Support vector machines experts for time series forecasting~// Neurocomputing, vol. 51, pp. 321–339, Apr. 2003.
-
-\bibitem{Dempster1977}
-	\textit{A. P. Dempster, N. M. Laird and D. B. Rubin} Maximum Likelihood from Incomplete Data via the EM Algorithm~// Journal of the Royal Statistical Society. Series B (Methodological), Vol. 39, No. 1 pp. 1-38, 1977.
-	
-\bibitem{Jordan1991}
-	\textit{M.~I.~Jordan, R.~A.~Jacobs} Hierarchies of adaptive experts~// in Advances in Neural Information Processing Systems. Cambridge, MA: MIT Press, 1991, pp. 985–992.
-
- \end{thebibliography}
 
 \end{document}
 
