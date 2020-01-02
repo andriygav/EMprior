@@ -39,7 +39,7 @@
 
 \begin{document}
 
-\title{\bf Priori distribution choices for a mixture of experts \thanks{This research was supported by RFBR (project ???) and NTI (project ???).}}
+\title{\bf A priori distribution choices for a mixture of experts \thanks{This research was supported by RFBR (project ???) and NTI (project ???).}}
 \date{}
 \author{}
 \maketitle
@@ -54,21 +54,23 @@ V. V. Strijov\footnote{Moscow Institute of Physics and Technology, Dorodnicyn Co
 \textbf{Abstract:} 
 %Данная работа посвящена анализу свойств смеси экспертов. 
 The paper investigates a mixture of expert models.
-A mixture of expert is a set of experts and gate function which weighs these experts.
+A mixture of experts is a set of experts and gate function which weighs these experts.
 %Экспертами рассматриваются линейные модели.
 Each expert is a linear model.
 %Смесь экспертов это нейросеть с функцией softmax на последнем слое.
 A gate function is a neural network with softmax on the last layer.
 %Рассматриваются различные способы выбора априорного распределения.
-In this article, we analysed different a priori distributions for each expert.
-We proposed a method that consider the relationship between the a priori distributions of different experts.
+In this article, we analyzed different a priori distributions for each expert.
+We proposed a method that takes into account the relationship between the a priori distributions of different experts.
 %Анализируется случай, когда выбрано информативное и неинформативное априорные распределения параметров каждого эксперта.
-To solve the obtained optimization problem, we used the EM algorithm.
+To solve the optimization problem, we used the EM algorithm.
 %Рассматривается задача поиска окружностей на изображении.
-The problem of finding circles in the image is considered as the task of a mixture of experts.%Каждой окружности на изображении соответствует свой эксперт. 
-Each circle in the image is a one expert.
+In this paper, the problem of circles parameters estimation is the task of a mixture of experts.
+%Каждой окружности на изображении соответствует свой эксперт. 
+Each circle in the image is one expert.
 %Требуется найти на изображении синтетически сгенерированные окружности с разным уровнем шума.
-Our method was tested on the real and synthetic data. A real data is a human eyes from rhe iris detection problem.
+For testing, we are using synthetic and real data.
+Real data is a human eye from the iris detection problem.
 %Рассматривается два случая, с зависимыми и независимыми априорными распределениями параметрами локальных моделей~--- экспертов. 
 %Сравнивается устойчивость к шуму смеси с заданными априорными распределениями на вектора параметров экспертов и без задания априорного распределения.
 
@@ -112,11 +114,12 @@ Our method was tested on the real and synthetic data. A real data is a human eye
 
 В~\cite{Bowyer2010} описаны работы по исследованию обнаружения радужки глаза на изображении. В работах~\cite{Matveev2010, Matveev2014} в частности описаны методы выделения границ радужки и зрачка.
 \end{comment}
-\section{Problem statement of finding the circle parameters in the image}
+\section{Problem statement of circle parameters estimation}
 %Задача аппроксимации окружности ставиться как задача линейной регрессии.
 %The task of finding circle in the image comes down to the task of linear regression.
 %Задано бинарное изображение:
-Binary image are considered as data:
+%Binary image are considered as data:
+This data are binary image
 \[
 \label{eq:st:cr:1}
 \begin{aligned}
@@ -124,10 +127,9 @@ Binary image are considered as data:
 \end{aligned}
 \]
 %где $1$ отвечает черной точке --- изображения, $0$ --- белой точке фона.
-where~$1$ is a black point --- an image and $0$ is a white point --- image background.
+where~$1$ is a black pixel, an image, and $0$ is a white pixel, the image background.
 %По изображению $\textbf{M}$ строится выборка $\textbf{C}$, элементами которой являются координаты~$x_i, y_i$ черных точек на картинке:
-The set~$\textbf{C}$ constructed by mapping the image $\textbf{M}$ to the set of coordinates~$x_i, y_i$ of black points in the image:
-
+The image~$\textbf{M}$ is mapped to the set of coordinates~$x_i, y_i$~$\textbf{C}$. The coordinates~$x_i, y_i$ is a coordinates of black pixels in the image~$\textbf{M}$:
 \[
 \label{eq:st:cr:2}
 \begin{aligned}
@@ -135,14 +137,16 @@ The set~$\textbf{C}$ constructed by mapping the image $\textbf{M}$ to the set of
 \end{aligned}
 \]
 %где $N$ --- число черных точек на изображении $\textbf{M}$.
-where~$N$ is a number of black points in the image~$\textbf{M}$.
+where~$N$ is the number of black pixels in the image~$\textbf{M}$.
 
 %Обозначим $x_0, y_0$ --- центр окружности, которую требуется найти на бинарном изображении $\textbf{M}$, а $r$ ее радиус.
-Let $x_0, y_0$ is a coordinates of center and $r$ is a radius of circle in the image $\textbf{M}$.
-Circle parameters $x_0, y_0, r$ need to be found.
+Let a pair of coordinates $x_0, y_0$ is the center of the circle, and $r$ is the radius of the circle in the image $\textbf{M}$.
+The circle parameters $x_0, y_0, r$ need to be found.
  
 %Элементы выборки $\left(x_i, y_i\right)\in\textbf{C}$ являются геометрическим местом точек, которое аппроксимируется уравнением окружности:
-The points $\left(x_i, y_i\right)\in\textbf{C}$ is geometric locus of circle points. This locus approximated by using circle equation:
+The points $\left(x_i, y_i\right)\in\textbf{C}$ is geometric locus of circle points. 
+%This locus approximated by using circle equation:
+The circle equation approximates this locus of points:
 \[
 \label{eq:st:cr:3}
 \begin{aligned}
@@ -150,7 +154,7 @@ The points $\left(x_i, y_i\right)\in\textbf{C}$ is geometric locus of circle poi
 \end{aligned}
 \]
 %Раскрыв скобки получим уравнение
-Rewrite brackets:
+Expand brackets:
 \[
 \label{eq:st:cr:4}
 \begin{aligned}
@@ -158,7 +162,7 @@ Rewrite brackets:
 \end{aligned}
 \]
 %Поставим задачу линейной регрессии для нахождения окружности:
-The equation~\eqref{eq:st:cr:4} is a linear regression problem with following data:
+Equation~\eqref{eq:st:cr:4} is a linear regression problem with following data:
 \[
 \label{eq:st:cr:5}
 \begin{aligned}
@@ -166,7 +170,7 @@ The equation~\eqref{eq:st:cr:4} is a linear regression problem with following da
 \end{aligned}
 \]
 %где найденые оптимальные параметры линейной регрессии $\textbf{w} = \bigr[w_1, w_2, w_3\bigr]^{\mathsf{T}}$ восстанавливают параметры окружности:
-where parameters~$\textbf{w} = \bigr[w_1, w_2, w_3\bigr]^{\mathsf{T}}$ reconstruct circle parameters~$x_0, y_0, r$:
+where the parameters~$\textbf{w} = \bigr[w_1, w_2, w_3\bigr]^{\mathsf{T}}$ reconstruct the circle parameters~$x_0, y_0, r$:
 \[
 \label{eq:st:cr:6}
 \begin{aligned}
@@ -175,21 +179,21 @@ x_0 = \frac{w_1}{2}, \quad y_0 = \frac{w_2}{2}, \quad r = \sqrt[]{w_3+x_{0}^{2}+
 \]
 
 %Решение уравнения~\eqref{eq:st:cr:5} находит параметры единственной окружности на изображении.
-The solution of problem~\eqref{eq:st:cr:5} reconstruct circle parameters only when number of circles in image is one.
+The solution of the problem~\eqref{eq:st:cr:5} reconstructs the circle parameters only if the number of circles in an image is equal to one.
 %В случае, когда на изображении несколько окружностей, предлагается использовать мультимодель.
-If the image has several circles, then it is proposed to use a multimodel.
+If the image consists of several circles, then the authors propose to use a multimodel.
 %В ее состав входят линейные модели.
-The multimodel consists of linear models.
+The multimodel is an ensemble of linear models.
 %Каждая линейная модель описывает одну окружность на изображении. 
 Each linear model approximates only one circle in the image.
 %В качестве мультимодели рассматривается смесь экспертов. 
-As a multimodel, we consider a mixture of experts model.
+In this paper, multimodel is a mixture of experts.
 %Данная постановка обобщается на поиск параметров эллипсов в приложении~\eqref{apendix:el}.
 
 \section{Problem statement of building a mixture of experts}
-Let generalize one circle approximation problem in the case when there are several circles.
+Generalize one circle approximation problem to the case of several circles.
 %Задана выборка из уравнения~\eqref{eq:st:cr:5} :
-Consider the data from the equation~\eqref{eq:st:cr:5} without assumption that circle is one:
+The data from equation~\eqref{eq:st:cr:5} for several circles case, given by the following data:
 \[
 \label{eq:st:1}
 \begin{aligned}
@@ -197,11 +201,11 @@ Consider the data from the equation~\eqref{eq:st:cr:5} without assumption that c
 \end{aligned}
 \]
 %где~$N$~---~число объектов в выборке, а~$n$~---~размерность признакового пространства.
-where~$N$~--- the number of datum and~$n$~--- is a number of features.
+where~$N$ is the number of datum and~$n$ is the number of features.
 \begin{definition}
 \label{def:1}
 %Смесь экспертов~---~мультимодель, определяющая правдоподобие веса $\pi_k$ каждой локальной модели $\textbf{f}_k$ на признаковом описании объекта $\textbf{x}$.
-A mixture of experts is a multimodel in which the weight of each local model depends on the object:
+A multimodel is mixture of experts if it has the following form
 \[
 \label{eq:st:2}
 \begin{aligned}
@@ -209,7 +213,7 @@ A mixture of experts is a multimodel in which the weight of each local model dep
 \end{aligned}
 \]
 %где~$\hat{\mathbf{f}}$~---~мультимодель, а $\mathbf{f}_k$ является некоторой моделью, $\pi_k$~---~шлюзовая функция, $\mathbf{w}_k$~---~параметры $k$-й локальной модели, $\mathbf{V}$~---~параметры шлюзовой функции.
-where~$\hat{\mathbf{f}}$~--- multimodel, $\mathbf{f}_k$~--- local models, $\pi_k$~--- gate function, $\mathbf{w}_k$~--- parameters of local model and $\mathbf{V}$~--- parameters of gate function.
+where~$\hat{\mathbf{f}}$ is the multimodel, $\mathbf{f}_k$ is the local models, $\pi_k$ is the gate function, $\mathbf{w}_k$ is the parameters of local model and $\mathbf{V}$ is the parameters of gate function.
 \end{definition}
 
 %В данной работе в качестве локальных моделей~$\mathbf{f}_k$ и шлюзовой функции~$\bm{\pi}$ рассматриваются следующие функции:
