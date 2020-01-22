@@ -71,36 +71,43 @@ The real data is a human eye image from the iris detection problem.
 }
 
 \section{Introduction}
-\begin{comment}
-В данной работе исследуется проблема построения модели смеси экспертов. Смесь экспертов --- это мультимодель, которая линейно взвешивает локальных моделей, которые аппроксимируют выборку. Значение весовых коэффициенты зависят от того объекта для которого производится предсказание.
+The paper studies the problem of a mixture of experts constructing. A mixture of experts is multimodel, which are weighed local models that approximate the dataset. The weighting coefficients depend on datum from the dataset.
 
-Примерами мультимоделей являются беггинг, градиентный бустинг~\cite{Tianqi2016} и случайный лес~\cite{Ishwaran2012} решающих деревьев. Подход к мультимоделированию~\cite{Yuksel2012} предполагает, что вклад каждого эксперта в ответ зависит от рассматриваемого объекта. Смесь экспертов использует шлюзовую функцию, которая определяет значимость предсказания каждого эксперта --- отдельной модели, входящей в смесь.
+Examples of multimodel are bagging, gradient boosting~\cite{Tianqi2016} and random forest~\cite{Ishwaran2012}. There are approaches to multimodeling~\cite{Yuksel2012} suggests that the contribution of each expert to the answer depends on the object from the dataset. A mixture of experts uses a gate function that weights the prediction of each expert.
 
-Для поиска оптимальных параметров смеси и локальных моделей рассматривается вероятностная постановка задачи. В качестве функционала качества рассматривается логарифм правдоподобия модели. Для оптимизации данного функционала используется EM-алгоритм~\cite{Dempster1977}.
-
-Мультимодели имеют ряд недостатков, которые связаны с тем, что сходимость локальных моделей существенно зависит от их начальной инициализации. Для повышения скорости сходимости предлагается использовать априорные знания о распределении параметров и распределении весов экспертов. В данной работе задается априорное распределения на веса локальных моделей, также, для повышения качества мультимодели, предлагается использовать зависимость априорных распределений. 
+The main problem of multimodal is a convergence dependence on the initial point.
+We are using the probability approach for finding optimal mixture parameters and local expert parameters.
+The paper proposes to use different prior distribution on parameters to improve convergence.
+The paper introduces the method which is using a dependence between prior distribution to improve multimodel quality.
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/statment}
-\caption{Пример изображений с окружностями с разным уровнем шума: (a) окружности без шума; (b) окружности с зашумленным радиусом; (c) окружности с зашумленным радиусом, а также с равномерным шумом по всему изображению}
+\includegraphics[width=1\textwidth]{result_eng/statment}
+\caption{An example of circles with different noise levels: (a) circle without noise; (b) noisy radius circle; (c) noisy radius circle, and uniform noisy on image}
 \label{example:1}
 \end{figure}
 
-Данная работа исследует зависимость качества модели в зависимости от выбора априорных распределений весов локальных моделей. Решается задача поиска окружностей на бинаризованном изображении. Предполагается, что радиусы окружностей различаются значимо, а также, что центры почти совпадают. Пример изображений показан на рис.~\ref{example:1}. Предлагается рассмотреть как ведет себя модель с априорными знанием и без них в случае изображений с разным уровнем шума. В данной работе в качестве отдельных экспертов рассматриваются линейные модели --- каждая модель отвечает своей окружности. В качестве шлюзовой функции рассматривается двухслойная нейронная сеть.
-\end{comment}
+The paper analysis multimodel quality depending on the prior distribution of the expert's parameters.
+There solves a problem of finding circles on a binarized image.
+Examples of images are shown in fig.~\ref{example:1}.
+In this paper, each expert is a linear model.
+A gate function is a two-layer fully connected neural network.
+
 \section{Related work}
-\begin{comment}
-Большое количество работ в области построения смеси экспертов посвящены выбору шлюзовой функции: используется softmax--регрессия, процесс Дирихле~\cite{Edward2002}, нейронная сеть~\cite{Shazeer2017} с функцией softmax на последнем слое.
-Ряд работ посвящены выбору моделей в качестве отдельных экспертов. В работах~\cite{Jordan1994, Jordan1991} в качестве модели эксперта рассматривается линейная модель. Работы~\cite{Lima2007, Cao2003} рассматриваю модель SVM в качестве модели эксперта.
-В работе~\cite{Yuksel2012} представлен обзор методов и моделей в задачах смеси экспертов. В данной работе представлен обзор выше перечисленных шлюзовых функций. Также в данной работе проведен анализ разных моделей, которые могут выступать в качестве локальной модели.
+Many papers on a mixture of experts are devoted to the choice of a gateway function: softmax, the Dirichlet process~\cite{Edward2002}, a neural network~\cite{Shazeer2017} with softmax function on the last layer.
+Some papers are devoted to the choice of expert type. 
+Papers~\cite{Jordan1994, Jordan1991} analyze linear models as experts.
+Papers~\cite{Lima2007, Cao2003} analyze SVMs as experts.
+The paper~\cite{Yuksel2012} contains an overview of different methods for choosing a gate function and expert type.
 
-Смесь экспертов имеет множество приложений в прикладных задачах. Работы~\cite{Yumlu2003, Cheung1995, Weigend2000} посвящены применению смеси экспертов в задачах прогнозирования временных рядов. 
-В работе~\cite{Ebrahimpour2009} предложен метод распознавания рукописных цифр. 
-Метод распознания текстов при помощи смеси экспертов иследуется в работах~\cite{Estabrooks2001}, распознание речи~\cite{Mossavat2010, Peng1996, Tuerk2001}. 
-В работе~\cite{Sminchisescu2007} исследуется смесь экспертов для задачи распознавания трехмерных движений человека. 
+A mixture of experts has many applications.
+Papers~\cite{Yumlu2003, Cheung1995, Weigend2000} use a mixture of experts in the task of forecasting time series.
+The paper~\cite{Ebrahimpour2009} uses a mixture of experts in the task of recognizing handwritten numbers.
+Papers~\cite{Estabrooks2001, Mossavat2010, Peng1996, Tuerk2001}  are devoted to methods of text and speech recognition by using a mixture of experts.
+The paper~\cite{Sminchisescu2007} analyzes a mixture of experts in the task of recognizing three-dimensional human movements.
 
-В~\cite{Bowyer2010} описаны работы по исследованию обнаружения радужки глаза на изображении. В работах~\cite{Matveev2010, Matveev2014} в частности описаны методы выделения границ радужки и зрачка.
-\end{comment}
+The paper~\cite{Bowyer2010} is devoted to a review of the study results on the iris detection in the image.
+The methods of highlighting the borders of the iris and pupil are described in papers~\cite{Matveev2010, Matveev2014}.
+
 \section{Problem statement of circle parameters estimation}
 %Задача аппроксимации окружности ставиться как задача линейной регрессии.
 %The task of finding circle in the image comes down to the task of linear regression.
@@ -412,7 +419,7 @@ p^{1}\left(\textbf{w}_1\right)\sim\mathcal{N}\left(\textbf{w}^{0}_{1}, \textbf{I
 
 \paragraph{Синтетические данные с разным типом шума в изображении.}
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synthetic}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synthetic}
 \caption{Мультимодель в зависимости от разных априорных предположений и в зависимости от разного уровня шума: (a)--(с) модель с регуляризаций априорных распределений; (d)--(g) модель с заданными априорными распределениями на параметрах локальных моделей; (e)--(j) модель без заданных априорных предположений}
 \label{experiment:1}
 \end{figure}
@@ -453,31 +460,31 @@ p^{1}\left(\textbf{w}_1\right)\sim\mathcal{N}\left(\textbf{w}^{0}_{1}, \textbf{I
 
 \paragraph{Процесс обучения на синтетических данных.}
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synthetic_param_progress}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synthetic_param_progress}
 \caption{График зависимости центра и радиуса окружностей от номера итерации: (a)--(b) модель с регуляризацией априорных распределений; (c)--(d) модель с заданными априорными распределениями на параметры моделей; (e)--(f) модель без задания априорных распределений}
 \label{experiment:st:2:1}
 \end{figure}
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synt_likelihood_progress}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synt_likelihood_progress}
 \caption{График зависимости логарифма правдоподобия модели от номера итерации ЕМ-алгорима}
 \label{experiment:st:2:2}
 \end{figure}
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synt_regular_progress}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synt_regular_progress}
 \caption{Визуализация процесса обучения для мультимодели с заданной регуляризацией: от 1й итерации до  25й итерации}
 \label{experiment:st:2:3}
 \end{figure}
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synt_prior_progress}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synt_prior_progress}
 \caption{Визуализация процесса обучения для мультимодели с заданным априорным распределением на параметрах локальных моделей: от 1й итерации до 25й итерации}
 \label{experiment:st:2:4}
 \end{figure}
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synt_not_prior_progress}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synt_not_prior_progress}
 \caption{Визуализация процесса обучения для мультимодели баз заданных априорных распределений: от 1й итерации до 25й итерации}
 \label{experiment:st:2:5}
 \end{figure}
@@ -495,13 +502,13 @@ p^{1}\left(\textbf{w}_1\right)\sim\mathcal{N}\left(\textbf{w}^{0}_{1}, \textbf{I
 
 \paragraph{Анализ мультимоделей в зависимости от уровня шума.} 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synthetic_param_progress_noise}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synthetic_param_progress_noise}
 \caption{График зависимости центра и радиуса окружностей от номера итерации: (a)--(b) модель с регуляризацией априорных распределений; (c)--(d) модель с заданными априорными распределениями на параметры моделей; (e)--(f) модель без задания априорных распределений}
 \label{experiment:st:3:1}
 \end{figure}
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_synt_likelihood_progress_noise}
+\includegraphics[width=1\textwidth]{result_eng/experiment_synt_likelihood_progress_noise}
 \caption{График зависимости логарифма правдоподобия от уровня шума}
 \label{experiment:st:3:2}
 \end{figure}
@@ -516,7 +523,7 @@ p^{1}\left(\textbf{w}_1\right)\sim\mathcal{N}\left(\textbf{w}^{0}_{1}, \textbf{I
 
 \paragraph{Реальные данные.}
 \begin{figure}[h!t]\center
-\includegraphics[width=0.9\textwidth]{result/experiment_real_compare}
+\includegraphics[width=0.9\textwidth]{result_eng/experiment_real_compare}
 \caption{Мультимодель в зависимости от разных априорных предположений на реальном изображении: (a) исходное изображение; (b) бинаризованое изображение; (c) мультимодель без априорных предположений; (d) мультимодель с априорными распределениями на параметрах локальных моделей; (e) мультимодель с регуляризаций на априорных распределениях параметров локальных моделей}
 \label{experiment:2}
 \end{figure}
@@ -528,19 +535,19 @@ p^{1}\left(\textbf{w}_1\right)\sim\mathcal{N}\left(\textbf{w}^{0}_{1}, \textbf{I
 %В случае, когда априорные распределения не заданы мультимодель верно находит внешнюю окружность, но не находит внутреннюю окружность. В случае, когда задано априорное распределение на параметры локальных моделей качество нахождение окружностей улучшилось, но внутренняя окружность все еще найдена не верно. После добавления к заданным априорным распределениям параметров регуляризации качество мультимодели выросло, что позволило верно найти и внутреннюю окружность.
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_real_not_prior}
+\includegraphics[width=1\textwidth]{result_eng/experiment_real_not_prior}
 \caption{Визуализация процесса обучения для мультимодели без априорных предположений: от 1й итерации до 15й итерации}
 \label{experiment:3}
 \end{figure}
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_real_prior}
+\includegraphics[width=1\textwidth]{result_eng/experiment_real_prior}
 \caption{Визуализация процесса обучения для мультимодели с априорным распределением на параметрах локальных моделей: от 1й итерации до 15й итерации}
 \label{experiment:4}
 \end{figure}
 
 \begin{figure}[h!t]\center
-\includegraphics[width=1\textwidth]{result/experiment_real_regular}
+\includegraphics[width=1\textwidth]{result_eng/experiment_real_regular}
 \caption{Визуализация процесса обучения для мультимодели с заданной регуляризацией: от 1й итерации до 15й итерации}
 \label{experiment:5}
 \end{figure}
