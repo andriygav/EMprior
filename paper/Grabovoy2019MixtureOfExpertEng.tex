@@ -109,10 +109,6 @@ The paper~\cite{Bowyer2010} is devoted to a review of the study results on the i
 The methods of highlighting the borders of the iris and pupil are described in papers~\cite{Matveev2010, Matveev2014}.
 
 \section{Problem statement of circle parameters estimation}
-%Задача аппроксимации окружности ставиться как задача линейной регрессии.
-%The task of finding circle in the image comes down to the task of linear regression.
-%Задано бинарное изображение:
-%Binary image are considered as data:
 This data are binary image
 \[
 \label{eq:st:cr:1}
@@ -120,10 +116,8 @@ This data are binary image
 \textbf{M} \in \{0,1\}^{m_1 \times m_2},
 \end{aligned}
 \]
-%где $1$ отвечает черной точке --- изображения, $0$ --- белой точке фона.
 where~$1$ is a black pixel, an image, and $0$ is a white pixel, the image background.
-%По изображению $\textbf{M}$ строится выборка $\textbf{C}$, элементами которой являются координаты~$x_i, y_i$ черных точек на картинке:
-The image~$\textbf{M}$ is mapped to a set of coordinates~$\textbf{C}=\left\{x_i, y_i\right\}_{i=1}^{N}$~. The coordinates~$x_i, y_i$ is a coordinates of black pixels in the image~$\textbf{M}$:
+The image~$\textbf{M}$ is mapped to a set of coordinates~$\textbf{C}=\left\{x_i, y_i\right\}_{i=1}^{N}$. The pair of coordinates~$(x_i, y_i)$ is a black pixel in~$\textbf{M}$:
 \[
 \label{eq:st:cr:2}
 \begin{aligned}
@@ -131,15 +125,14 @@ The image~$\textbf{M}$ is mapped to a set of coordinates~$\textbf{C}=\left\{x_i,
 \end{aligned}
 \]
 %где $N$ --- число черных точек на изображении $\textbf{M}$.
-where~$N$ is a number of black pixels in the image~$\textbf{M}$.
+where~$N$ is the number of black pixels.
 
 %Обозначим $x_0, y_0$ --- центр окружности, которую требуется найти на бинарном изображении $\textbf{M}$, а $r$ ее радиус.
-Let a pair of coordinates $x_0, y_0$ is the center of the circle, and $r$ is radius of the circle in the image $\textbf{M}$.
+Let~$(x_0, y_0)$ be the center of the circle, and $r$ is radius of the circle.
 %The circle parameters $x_0, y_0, r$ need to be found.
  
 %Элементы выборки $\left(x_i, y_i\right)\in\textbf{C}$ являются геометрическим местом точек, которое аппроксимируется уравнением окружности:
-The points $\left(x_i, y_i\right)\in\textbf{C}$ is a circle locus of points. 
-It satisfies the following condition:
+The coordinates $\left(x_i, y_i\right)\in\textbf{C}$ is a circle locus of points defined by
 \[
 \label{eq:st:cr:3}
 \begin{aligned}
@@ -155,15 +148,15 @@ Expand brackets:
 \end{aligned}
 \]
 %Поставим задачу линейной регрессии для нахождения окружности:
-Equation~\eqref{eq:st:cr:4} is the linear regression problem, given following data:
+Rewrite equation~\eqref{eq:st:cr:4} to set the linear regressions problem for all points in the dataset:
 \[
 \label{eq:st:cr:5}
 \begin{aligned}
-\textbf{X}\textbf{w} \approx \textbf{y},  \quad \textbf{X} = \left[\textbf{C}, \textbf{1}\right], \quad \textbf{y} = [x_1^2+y_1^2, x_2^2+y_2^2, \cdots, x_N^2+y_N^2]^{\mathsf{T}},
+\textbf{X}\textbf{w} \approx \textbf{y},  \quad \textbf{X} = \left[\textbf{C}, \textbf{1}\right], \quad \textbf{y} = [x_1^2+y_1^2, x_2^2+y_2^2, \cdots, x_N^2+y_N^2]^{\mathsf{T}}.
 \end{aligned}
 \]
 %где найденые оптимальные параметры линейной регрессии $\textbf{w} = \bigr[w_1, w_2, w_3\bigr]^{\mathsf{T}}$ восстанавливают параметры окружности:
-where the parameters~$\textbf{w} = \bigr[w_1, w_2, w_3\bigr]^{\mathsf{T}}$ reconstruct the circle parameters~$x_0, y_0, r$:
+The parameters~$\textbf{w} = \bigr[w_1, w_2, w_3\bigr]^{\mathsf{T}}$ reconstruct the circle parameters~$x_0, y_0, r$:
 \[
 \label{eq:st:cr:6}
 \begin{aligned}
@@ -174,9 +167,9 @@ x_0 = \frac{w_1}{2}, \quad y_0 = \frac{w_2}{2}, \quad r = \sqrt[]{w_3+x_{0}^{2}+
 %Решение уравнения~\eqref{eq:st:cr:5} находит параметры единственной окружности на изображении.
 The solution of problem~\eqref{eq:st:cr:5} reconstructs the circle parameters only if the number of circles in an image is equal to one.
 %В случае, когда на изображении несколько окружностей, предлагается использовать мультимодель.
-If the image consists of several circles, then the authors propose to use a multimodel.
+The authors propose to use the multimodel for the image, which consists of several circles.
 %В ее состав входят линейные модели.
-The multimodel is an ensemble of linear models.
+The multimodel is an ensemble of the linear models.
 %Каждая линейная модель описывает одну окружность на изображении. 
 Each linear model approximates only one circle in the image.
 %В качестве мультимодели рассматривается смесь экспертов. 
@@ -184,7 +177,7 @@ In this paper, multimodel is a mixture of experts.
 %Данная постановка обобщается на поиск параметров эллипсов в приложении~\eqref{apendix:el}.
 
 \section{Problem statement of building a mixture of experts}
-Generalize one--circle approximation problem to the case of several circles.
+Generalize one-circle approximation problem to the case of several circles.
 %Задана выборка из уравнения~\eqref{eq:st:cr:5} :
 %The data from equation~\eqref{eq:st:cr:5} for several circles case, given by the following data:
 The data for this case is
@@ -195,11 +188,11 @@ The data for this case is
 \end{aligned}
 \]
 %где~$N$~---~число объектов в выборке, а~$n$~---~размерность признакового пространства.
-where~$N$ is a number of datum and~$n$ is a number of features.
+where~$N$ is a number of datum and~$n$ is a number of features. In this paper,~$n$ is equal to 3.
 \begin{definition}
 \label{def:1}
 %Смесь экспертов~---~мультимодель, определяющая правдоподобие веса $\pi_k$ каждой локальной модели $\textbf{f}_k$ на признаковом описании объекта $\textbf{x}$.
-A multimodel~$\hat{\mathbf{f}}$ is a mixture of experts if
+Call the multimodel~$\hat{\mathbf{f}}$ a mixture of experts if
 \[
 \label{eq:st:2}
 \begin{aligned}
@@ -207,11 +200,11 @@ A multimodel~$\hat{\mathbf{f}}$ is a mixture of experts if
 \end{aligned}
 \]
 %где~$\hat{\mathbf{f}}$~---~мультимодель, а $\mathbf{f}_k$ является некоторой моделью, $\pi_k$~---~шлюзовая функция, $\mathbf{w}_k$~---~параметры $k$-й локальной модели, $\mathbf{V}$~---~параметры шлюзовой функции.
-where~$\mathbf{f}_k$ is a local model, $\pi_k$ is a gate function, vector~$\mathbf{w}_k$ is a parameters of local model and~$\mathbf{V}$ is a parameters of gate function.
+where~$\mathbf{f}_k$ is a local model, $\pi_k$ is a gate function, vector~$\mathbf{w}_k$ is some parameters of the local model and~$\mathbf{V}$ is some parameters of the gate function.
 \end{definition}
 
 %В данной работе в качестве локальных моделей~$\mathbf{f}_k$ и шлюзовой функции~$\bm{\pi}$ рассматриваются следующие функции:
-In this paper, the local model is a linear model. The gate function is a simple 2--layer fully connected neural network.
+This paper asserts the local model a linear model. The gate function is the two--layer fully connected neural network
 \[
 \label{eq:st:3}
 \begin{aligned}
@@ -220,12 +213,12 @@ In this paper, the local model is a linear model. The gate function is a simple 
 \end{aligned}
 \]
 %где $\mathbf{V} = \bigr\{\mathbf{V}_1, \mathbf{V}_2\bigr\}$~---~параметры шлюзовой функции.
-where $\mathbf{V} = \bigr\{\mathbf{V}_1, \mathbf{V}_2\bigr\}$ is a set of gate function parameters.
+where $\mathbf{V} = \bigr\{\mathbf{V}_1, \mathbf{V}_2\bigr\}$ is a set of the gate function parameters.
 
 %Параметры локальных моделей оптимизируются согласно принципу максимального правдоподобия модели:
 %All parameters optimises according to the maximum likelihood principle:
 %Recall from~\eqref{eq:st:2} that the full distribution can be written as a linear superposition of local distribution:
-Combining~\eqref{eq:st:2} and~\eqref{eq:st:3}, we obtain likelihood:
+Combining~\eqref{eq:st:2} and~\eqref{eq:st:3}, obtain the likelihood solution:
 \[
 \label{eq:st:4}
 \begin{aligned}
@@ -237,7 +230,7 @@ where~$\mathbf{W} = \bigr[\mathbf{w}_1, \mathbf{w}_2, \cdots, \mathbf{w}_K\bigr]
 
 %Задача оптимизации параметров локальных моделей и параметров смеси:
 %The optimisation problem for finding optimal parameters of local models and optimal mixture parameters:
-Optimal parameters is a maximum likelihood solution:
+The optimal parameters is delivered by the maximum likelihood solution:
 \[
 \label{eq:st:5}
 \begin{aligned}
@@ -247,7 +240,7 @@ Optimal parameters is a maximum likelihood solution:
 
 \section{EM--algorithm as a solver of optimisation problem }
 %Для построения смеси экспертов рассмотрим следующую вероятностную постановку задачи. Предположим, что
-To build a mixture of experts, consider the following probabilistic statement of the problem:
+To build a mixture of experts, set the following probabilistic statement for the problem~\eqref{eq:st:1}:
 
 \begin{enumerate}
 	%\item[1)] правдоподобие выборки $p_{k}\left(y_{i}|\mathbf{w}_{k}, \mathbf{x}_{i}\right) = \mathcal{N}\left(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\right),$ где $\beta$ уровень шума,
@@ -260,7 +253,7 @@ To build a mixture of experts, consider the following probabilistic statement of
 %Тогда правдоподобие модели~\eqref{eq:st:4} переписывается в следующем виде:
 %The previous assumption, the likelihood~\eqref{eq:st:4} is rewritten to:
 %The previous assumption allows us to rewrite the likelihood from equation~\eqref{eq:st:4}:
-Combining assumption~$1), 2), 3)$ and equation~\eqref{eq:st:4}, we obtain
+Combining assumptions~$1), 2), 3)$ and equation~\eqref{eq:st:4}, obtain
 \[
 \label{eq:em:1}
 \begin{aligned}
@@ -273,10 +266,9 @@ p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}
  
 %Для решения задачи~\eqref{eq:st:5} в предположении~\eqref{eq:em:1} введем матрицу скрытых переменных~$\mathbf{Z}$, где $z_{ik} = 1$, если $i$-й~объект порожден моделью~$k$ и~$z_{ik} = 0$ иначе.
 %Consider the matrix of hidden variables~$\mathbf{Z}$ for solving problem~\eqref{eq:st:5} under assumption~\eqref{eq:em:1}. In matrix~$\mathbf{Z}$ all~$z_{ik} = 1$ if and only if object $i$ related to local model $k$ and $z_{ik} = 0$ otherwise.
-Let us introduce a binary matrix~$\mathbf{Z}$. Element~$z_{ik}$ is equal to $1$ if and only if object $i$ related to the local model $k$.
-%Используя~$\mathbf{Z}$, перепишем логарифм правдоподобия~\eqref{eq:em:1} следующим образом:
-%Logarithm of likelihood~\eqref{eq:em:1} rewrites to following view by using matrix~$\mathbf{Z}$:
-If we combine the binary matrix~$\mathbf{Z}$ with logarithm of likelihood~\eqref{eq:em:1}, we get
+Introduce a binary matrix~$\mathbf{Z}$. Its element~$z_{ik}$ is equal to $1$ if and only if the object $i$ is related to the local model $k$.
+%If we combine the binary matrix~$\mathbf{Z}$ with logarithm of likelihood~\eqref{eq:em:1}, we get
+Integrating the binary matrix~$\mathbf{Z}$ in~\eqref{eq:em:1}, obtain:
 \[
 \label{eq:em:2}
 \begin{aligned}
@@ -288,7 +280,7 @@ If we combine the binary matrix~$\mathbf{Z}$ with logarithm of likelihood~\eqref
 \]
 %С учетом~\eqref{eq:em:2} задача оптимизации~\eqref{eq:st:5} принимает вид:
 %The optimisation problem~\eqref{eq:st:5} for log--likelihood~\eqref{eq:em:2} rewrites as follows
-Combining~\eqref{eq:st:5} and~\eqref{eq:em:2}, we obtain new optimisation problem:
+Obtain a new optimisation problem combining~\eqref{eq:st:5} and~\eqref{eq:em:2}:
 \[
 \label{eq:em:3}
 \begin{aligned}
@@ -296,16 +288,16 @@ Combining~\eqref{eq:st:5} and~\eqref{eq:em:2}, we obtain new optimisation proble
 \end{aligned}
 \]
 %Для поиска локального минимума в задаче оптимизации~\eqref{eq:em:3} воспользуемся вариационным EM--алгоритмом.
-In this paper, we are using expectation--maximization~\cite{bishop2006} algorithm for finding maximum likelihood solution for the multimodel with latent variables~$\mathbf{Z}$.
+Use the expectation-maximization~\cite{bishop2006} algorithm to find the maximum likelihood solution~\eqref{eq:em:3} for the multimodel~\eqref{eq:em:1} with latent variable~$\mathbf{Z}$.
 
 \paragraph{E--step.} 
 %Найдем вариационной распределение~\cite{bishop2006} в условиях аппроксимации среднего поля $q\left(\mathbf{Z}, \mathbf{W}\right) = q\left(\mathbf{Z}\right)q\left(\mathbf{W}\right)$ наиболее близкое к $p\bigr(\mathbf{Z}, \mathbf{W}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$.
-Let a join distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ satisfy the assumption of mean field approximation~$q\left(\mathbf{Z}, \mathbf{W}\right) = q\left(\mathbf{Z}\right)q\left(\mathbf{W}\right)$~\cite{bishop2006}. 
+Let a join distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ satisfies  the following assumption~$q\left(\mathbf{Z}, \mathbf{W}\right) = q\left(\mathbf{Z}\right)q\left(\mathbf{W}\right)$~\cite{bishop2006}. 
 %Find the variational distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ closest to~$p\bigr(\mathbf{Z}, \mathbf{W}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$.
 %Для упрощения будем искать логарифм с точностью до аддитивной константы, которую восстановим используя вид распределения.
-In the text below, the symbol~$\propto$ means that both sides are equal to up to an additive constant.
+The symbol~$\propto$ means that both sides are equal to up to an additive constant.
 %Найдем распределение скрытой переменной~$q\left(\textbf{Z}\right)$
-Firstly, find the distribution~$q\left(\textbf{Z}\right)$:
+First, find the distribution~$q\left(\textbf{Z}\right)$:
 \[
 \label{eq:em:4}
 \begin{aligned}
@@ -315,9 +307,9 @@ p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \te
 \end{aligned}
 \]
 %Получаем, что распределениие $q\bigr(z_{ik}\bigr)$ является бернулевским с параметром~$z_{ik}$ из выражения~\eqref{eq:em:4}.
-The distribution~$q\bigr(z_{ik}\bigr)$ is a Bernoulli distribution with the probability~$z_{ik}$ from equation~\eqref{eq:em:4}.
+The distribution~$q\bigr(z_{ik}\bigr)$ is the Bernoulli distribution with probability~$z_{ik}$ from equation~\eqref{eq:em:4}.
 %Найдем распределение переменной~$q\left(\textbf{W}\right)$
-Secondly, find the distribution~$q\left(\textbf{W}\right)$:
+Second, find the distribution~$q\left(\textbf{W}\right)$:
 \[
 \label{eq:em:5}
 \begin{aligned}
@@ -328,7 +320,7 @@ Secondly, find the distribution~$q\left(\textbf{W}\right)$:
 \end{aligned}
 \]
 %Из вида распределения~\eqref{eq:em:5} получаем, что распределение $q\bigr(\mathbf{w}_{k}\bigr) = \mathcal{N}\left(\mathbf{w}_{k}| \mathbf{m}_{k}, \mathbf{B}_k\right),$ является нормальным с параметрами $\mathbf{m}_k, \mathbf{B}_k,$ которые определяются следующим образом:
-The distribution~$q\bigr(\mathbf{w}_{k}\bigr)$ is a normal distribution with a mean~$\mathbf{m}_{k}$ and a covariance matrix~$\mathbf{B}_k$. The distribution parameters~$\mathbf{m}_{k}, \mathbf{B}_k$ are therefore given by
+The distribution~$q\bigr(\mathbf{w}_{k}\bigr)$ is the normal distribution with mean~$\mathbf{m}_{k}$ and covariance matrix~$\mathbf{B}_k$:
 \[
 \label{eq:em:6}
 \begin{aligned}
@@ -338,7 +330,7 @@ The distribution~$q\bigr(\mathbf{w}_{k}\bigr)$ is a normal distribution with a m
 
 \paragraph{M--step.} 
 %Найдем $\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta$ из максимизации~$\mathsf{E}_{q}\log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$.
-In the M step, the distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ is held fixed and the lower bound~$\mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$  is maximized with respect to parameters~$\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta$:
+The distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ is fixed, while the lower bound~$\mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$  is maximized with respect to the parameters~$\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta$:
 \[
 \label{eq:em:7}
 \begin{aligned}
@@ -349,9 +341,9 @@ In the M step, the distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ is held f
 \end{aligned}
 \]
 %Для нахождения параметров~$\textbf{V}$ максимизирующих функцию~\eqref{eq:em:7} воспользуемся градиентным методом оптимизации. 
-To find the optimal parameters~$\textbf{V}$ we use the gradient optimization method.
+To find the optimal parameters~$\textbf{V}$, use the gradient optimization algorithm.
 %Он гарантирует сходимость к локальному экстремуму функции.
-The gradient method guarantees convergence to local extrema.
+It convergences to some local maximum.
 %Оптимальное значение параметра~$\textbf{A}_k$, которое максимизирует функцию~\eqref{eq:em:7}, найдем из условия оптимума первого порядка:
 %Let find the parameters~$\textbf{A}_k$, which maximising the function~\eqref{eq:em:7}:
 Using~\eqref{eq:em:7}, we get
@@ -379,13 +371,14 @@ Similarly, we get
 \end{aligned}
 \]
 %Используя формулы~(\ref{eq:em:4}--\ref{eq:em:11}) получаем итеративную процедуру, которая сходится к локальному максимуму~\eqref{eq:em:3}.
-The formulas~(\ref{eq:em:4}--\ref{eq:em:11}) are an iterative procedure which convergence to a local maximum of optimisation problem~\eqref{eq:em:3}.
+Formulas~(\ref{eq:em:4}--\ref{eq:em:11}) define an iterative procedure, which convergence to some local maximum of the optimization problem~\eqref{eq:em:3}.
+
 %Если в списке вероятностных предположений оставить только пункт~1) получим решение задачи оптимизации~\eqref{eq:em:1}, когда не задано никаких априорных распределений на модели. 
-If in the list of probabilistic statements we leave only the statement~1) then we find a solution to the optimization problem~\eqref{eq:em:1}.
+%If in the list of probabilistic statements we leave only the statement~1) then we find a solution to the optimization problem~\eqref{eq:em:1}.
 %В случае, когда рассматриваются пункты~1),\,2) получим задачу с заданными априорными распределениями параметров локальных моделей.  
-If in the list of probabilistic statements we leave statements~1) and~2) then we find a solution to the optimization problem with prior distribution on each local model parameters.
+%If in the list of probabilistic statements we leave statements~1) and~2) then we find a solution to the optimization problem with prior distribution on each local model parameters.
 %В случае, когда рассматриваются все пункты~1),\,2),\,3) назовем решение с регуляризацией априорных распределений, так как в данном случае мы учитываем зависимость между локальными моделями.
-If in the list of probabilistic statements we leave all statements~1),~2) and 3) then we find a solution to the optimization problem~\eqref{eq:em:3} with prior distributions and relationships between prior distributions of different local models.
+%If in the list of probabilistic statements we leave all statements~1),~2) and 3) then we find a solution to the optimization problem~\eqref{eq:em:3} with prior distributions and relationships between prior distributions of different local models.
 
 \section{Computational experiment}
 \begin{comment}
