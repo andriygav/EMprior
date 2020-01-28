@@ -177,7 +177,13 @@ In this paper, multimodel is a mixture of experts.
 %Данная постановка обобщается на поиск параметров эллипсов в приложении~\eqref{apendix:el}.
 
 \section{Problem statement of building a mixture of experts}
+\begin{definition}
+\label{def:1}
+%Смесь экспертов~---~мультимодель, определяющая правдоподобие веса $\pi_k$ каждой локальной модели $\textbf{f}_k$ на признаковом описании объекта $\textbf{x}$.
+A model~$\mathbf{f}$ is a local model on dataset~$\textbf{X}$ if~model $\mathbf{f}$ approximate some not empty subset~$\textbf{X}'\subset\textbf{X}$.
+\end{definition}
 Generalize one-circle approximation problem to the case of several circles.
+Each circle is a local model.
 %Задана выборка из уравнения~\eqref{eq:st:cr:5} :
 %The data from equation~\eqref{eq:st:cr:5} for several circles case, given by the following data:
 The data for this case is
@@ -189,8 +195,11 @@ The data for this case is
 \]
 %где~$N$~---~число объектов в выборке, а~$n$~---~размерность признакового пространства.
 where~$N$ is a number of datum and~$n$ is a number of features. In this paper,~$n$ is equal to 3.
+
+
+
 \begin{definition}
-\label{def:1}
+\label{def:2}
 %Смесь экспертов~---~мультимодель, определяющая правдоподобие веса $\pi_k$ каждой локальной модели $\textbf{f}_k$ на признаковом описании объекта $\textbf{x}$.
 Call the multimodel~$\hat{\mathbf{f}}$ a mixture of experts if
 \[
@@ -202,6 +211,8 @@ Call the multimodel~$\hat{\mathbf{f}}$ a mixture of experts if
 %где~$\hat{\mathbf{f}}$~---~мультимодель, а $\mathbf{f}_k$ является некоторой моделью, $\pi_k$~---~шлюзовая функция, $\mathbf{w}_k$~---~параметры $k$-й локальной модели, $\mathbf{V}$~---~параметры шлюзовой функции.
 where~$\mathbf{f}_k$ is a local model, $\pi_k$ is a gate function, vector~$\mathbf{w}_k$ is some parameters of the local model and~$\mathbf{V}$ is some parameters of the gate function.
 \end{definition}
+
+
 
 %В данной работе в качестве локальных моделей~$\mathbf{f}_k$ и шлюзовой функции~$\bm{\pi}$ рассматриваются следующие функции:
 This paper asserts the local model a linear model. The gate function is the two--layer fully connected neural network
