@@ -116,7 +116,8 @@ This data are binary image
 \textbf{M} \in \{0,1\}^{m_1 \times m_2},
 \end{aligned}
 \]
-where~$1$ is a black pixel, an image, and $0$ is a white pixel, the image background.
+where~$1$ is a black pixel, an image, and $0$ is a white pixel, the image background. 
+An image example is shown in fig.~\ref{example:1}.
 The image~$\textbf{M}$ is mapped to a set of coordinates~$\textbf{C}=\left\{x_i, y_i\right\}_{i=1}^{N}$. The pair of coordinates~$(x_i, y_i)$ is a black pixel in~$\textbf{M}$:
 \[
 \label{eq:st:cr:2}
@@ -162,20 +163,21 @@ Each linear model approximates only one circle in the image.
 In this paper, multimodel is a mixture of experts.
 
 \section{Problem statement of building a mixture of experts}
-\begin{definition}
-\label{def:1}
-A model~$\mathbf{f}$ is a local model on dataset~$\textbf{X}$ if~model $\mathbf{f}$ approximate some not empty subset~$\textbf{X}'\subset\textbf{X}$.
-\end{definition}
 Generalize one-circle approximation problem to the case of several circles.
 Each circle is a local model.
 The data for this case is
 \[
 \label{eq:st:1}
 \begin{aligned}
-\textbf{X} \in \mathbb{R}^{N \times n},
+\textbf{X} \in \mathbb{R}^{N \times n}, \quad \textbf{y}\in \mathbb{R}^{N}
 \end{aligned}
 \]
 where~$N$ is a number of datum and~$n$ is a number of features. In this paper,~$n$ is equal to 3.
+
+\begin{definition}
+\label{def:1}
+A model~$\mathbf{f}$ is a local model on dataset~$\textbf{X}$ if~model $\mathbf{f}$ approximate some not empty subset~$\textbf{X}'\subset\textbf{X}$.
+\end{definition}
 
 \begin{definition}
 \label{def:2}
@@ -199,43 +201,57 @@ This paper asserts the local model a linear model. The gate function is the two-
 \]
 where $\mathbf{V} = \bigr\{\mathbf{V}_1, \mathbf{V}_2\bigr\}$ is a set of the gate function parameters.
 
-Combining~\eqref{eq:st:2} and~\eqref{eq:st:3}, obtain the likelihood solution:
+The paper proposes to use a probabilistic approach to describe a mixture of experts. Let~$\textbf{y}$ be a random variable with density function~$p\left(\textbf{y}|\textbf{X}\right)$. Let density~$p\left(\textbf{y}|\textbf{X}, \hat{\textbf{f}}\right) $ approximate truth density~$p\left(\textbf{y}|\textbf{X}\right)$:
+\[
+\label{eq:st:new:1}
+\begin{aligned}
+p\left(\textbf{y}|\textbf{X}, \hat{\textbf{f}}\right) = \prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_kp_{k}\left(y_{i}|\textbf{f}_{k}\left(\mathbf{x}_{i}\right)\right)\right),
+\end{aligned}
+\]
+where~$\hat{\textbf{f}}$ is the mixture of experts model and~$\textbf{f}_k, \bm{\pi}$ are defined by~\eqref{eq:st:3}.
+
+%Combining~\eqref{eq:st:2} and~\eqref{eq:st:3}, obtain the likelihood solution:
+Now if we suppose that~$\textbf{w}_k$ is the random variable with density function~$p^{k}\bigr(\mathbf{w}_k\bigr)$, we get full likelihood:
 \[
 \label{eq:st:4}
 \begin{aligned}
 p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}\bigr) = \prod_{k=1}^{K}p^{k}\bigr(\mathbf{w}_k\bigr)\prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_{k}p_{k}\bigr(y_i|\mathbf{w}_k, \mathbf{x}_i\bigr)\right),
 \end{aligned}
 \]
-where~$\mathbf{W} = \bigr[\mathbf{w}_1, \mathbf{w}_2, \cdots, \mathbf{w}_K\bigr]^{\mathsf{T}}.$
+where~$\mathbf{W} = \bigr\{\mathbf{w}_1, \mathbf{w}_2, \cdots, \mathbf{w}_K\bigr\}.$
 
-The optimal parameters is delivered by the maximum likelihood solution:
+The optimal parameters is delivered by the evidence maximisation:
 \[
 \label{eq:st:5}
 \begin{aligned}
-\hat{\mathbf{W}}, \hat{\mathbf{V}} = \arg\max_{\mathbf{W}, \mathbf{V}} p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}\bigr).
+\hat{\mathbf{V}} = \arg\max_{\mathbf{V}} p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}\bigr).
 \end{aligned}
 \]
 
-\section{EM--algorithm as a solver of optimisation problem }
-To build a mixture of experts, set the following probabilistic statement for the problem~\eqref{eq:st:1}:
+\section{Probabilistic statement}
+To build a mixture of experts, set the following probabilistic statement for the dataset~\eqref{eq:st:1}:
 
 \begin{enumerate}
-	\item[1)] a likelihood $p_{k}\left(y_{i}|\mathbf{w}_{k}, \mathbf{x}_{i}\right) = \mathcal{N}\left(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\right).$ Parameter~$\beta$ is a level of noise,
-	\item[2)] a prior distribution for the parameters $p^{k}\left(\mathbf{w}_{k}\right) = \mathcal{N}\left(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\right),$ where $\mathbf{w}^{0}_{k}$ is a vector of size $n\times1$ and~$\mathbf{A}_{k}$ is a covariance matrix,
-	\item[3)] prior regularisation $p\left(\bm{\varepsilon}_{k,k'}|\bm{\Xi}\right) = \mathcal{N}\left(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\right),$ where~$\bm{\Xi}$ is a covariance matrix and $\bm{\varepsilon}_{k,k'} = \mathbf{w}_{k}^{0}-\mathbf{w}_{k'}^{0}.$
+	\item[1)] the likelihood $p_{k}\left(y_{i}|\mathbf{w}_{k}, \mathbf{x}_{i}\right) = \mathcal{N}\left(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\right).$ Parameter~$\beta$ is a level of noise,
+	\item[2)] the prior distribution for the parameters $p^{k}\left(\mathbf{w}_{k}\right) = \mathcal{N}\left(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\right),$ where $\mathbf{w}^{0}_{k}$ is a vector of size $n\times1$ and~$\mathbf{A}_{k}$ is a covariance matrix,
+	\item[3)] the prior regularisation $p\left(\bm{\varepsilon}_{k,k'}|\bm{\Xi}\right) = \mathcal{N}\left(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\right),$ where~$\bm{\Xi}$ is a covariance matrix and $\bm{\varepsilon}_{k,k'} = \mathbf{w}_{k}^{0}-\mathbf{w}_{k'}^{0}.$
 \end{enumerate}
-Combining assumptions~$1), 2), 3)$ and equation~\eqref{eq:st:4}, obtain
+The assumption 2) is a prior distribution for the parameters. It sets some restrictions to the model. For example, if~$\textbf{w}_k^{0}$ is [0,0,1], then the k-th local model prefers a circle with parameters $x_0=0, y_0=0, r=1$.
+
+The assumption 3) is a prior regularisation. It sets restrictions on the prior distribution parameters. For example if~$\text{diag}\left(\bm{\Xi}\right)=[0.001, 0.001, 1]$, then the centers of different circles, which corresponds to different local models are equals.
+
+Combining assumptions~$1), 2), 3)$ and equation~\eqref{eq:st:4}, obtain new likelihood function:
 \[
 \label{eq:em:1}
 \begin{aligned}
-p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) = &\prod_{k,k'=1}^{K}\mathcal{N}\left(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\right)\cdot\\
-&\cdot\prod_{k=1}^{K}\mathcal{N}\left(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\right)\prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_{k}\mathcal{N}\left(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\right)\right),
+p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) = &\prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_{k}\mathcal{N}\left(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\right)\right)\cdot\\
+&\cdot\prod_{k=1}^{K}\mathcal{N}\left(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\right)\prod_{k,k'=1}^{K}\mathcal{N}\left(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\right),
 \end{aligned}
 \]
  where~$\mathbf{A} = \bigr\{\mathbf{A}_1, \cdots, \mathbf{A}_K\bigr\}.$
  
-Introduce a binary matrix~$\mathbf{Z}$. Its element~$z_{ik}$ is equal to $1$ if and only if the object $i$ is related to the local model $k$.
-Integrating the binary matrix~$\mathbf{Z}$ in~\eqref{eq:em:1}, obtain:
+Introduce a binary matrix~$\mathbf{Z}$. Its element~$z_{ik}$ is equal to $1$ if and only if the $i$-th object corresponds to the $k$-th local model.
+Using the binary matrix~$\mathbf{Z}$ in~\eqref{eq:em:1} and take logarithm, obtain:
 \[
 \label{eq:em:2}
 \begin{aligned}
@@ -245,17 +261,48 @@ Integrating the binary matrix~$\mathbf{Z}$ in~\eqref{eq:em:1}, obtain:
 &+ \sum_{k=1}^{K}\sum_{k'=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right)^{\mathsf{T}}\bm{\Xi}^{-1}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right) +\frac{1}{2}\log\det \bm{\Xi} -\frac{n}{2}\log{2\pi}\right].
 \end{aligned}
 \]
-Obtain a new optimisation problem combining~\eqref{eq:st:5} and~\eqref{eq:em:2}:
+Set the new optimisation problem to optimise the evidence function, which is obtained by integrating formula~\eqref{eq:em:2} with respect to the parameters~$\textbf{W}, \textbf{Z}$:
 \[
 \label{eq:em:3}
 \begin{aligned}
-\mathbf{W}, \mathbf{Z}, \mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta = \arg\max_{\mathbf{W}, \mathbf{Z}, \mathbf{V}, \mathbf{W}^0, \textbf{A}, \beta} \log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}&|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr).
+\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta = \arg\max_{\mathbf{V}, \mathbf{W}^0, \textbf{A}, \beta} \log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr).
 \end{aligned}
 \]
-Use the expectation-maximization~\cite{bishop2006} algorithm to find the maximum likelihood solution~\eqref{eq:em:3} for the multimodel~\eqref{eq:em:1} with latent variable~$\mathbf{Z}$.
+\section{EM--algorithm as a solver of optimisation problem}
+Let~$q\left(\textbf{W}, \textbf{Z}\right)$ be some density distribution of parameters~$\textbf{W}, \textbf{Z}$. Rewrite evidence:
+\[
+\label{eq:em:new:1}
+\begin{aligned}
+\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) &= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right) \log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)d\textbf{W}d\textbf{Z} =\\
+&= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\log \frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}d\textbf{W}d\textbf{Z}=\\
+&= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\log \frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)q\bigr(\textbf{W}, \textbf{Z}\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)q\bigr(\textbf{W}, \textbf{Z}\bigr)}d\textbf{W}d\textbf{Z}=\\
+&= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}{q\bigr(\textbf{W}, \textbf{Z}\bigr)}d\textbf{W}d\textbf{Z}+\\
+&+\int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\frac{q\bigr(\textbf{W}, \textbf{Z}\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}d\textbf{W}d\textbf{Z}=\\
+&=\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)+\mathsf{D}_{KL}\left(q\left(\textbf{W}, \textbf{Z}\right)||p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)\right)
+\end{aligned}
+\]
+Using~\eqref{eq:em:new:1}, we get lower bound of evidence:
+\[
+\label{eq:em:new:2}
+\begin{aligned}
+\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)\geq \mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right),
+\end{aligned}
+\]
+where~$\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$ is called lower bound of evidence.
 
-\paragraph{E--step.} 
-Let a join distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ satisfies  the following assumption~$q\left(\mathbf{Z}, \mathbf{W}\right) = q\left(\mathbf{Z}\right)q\left(\mathbf{W}\right)$~\cite{bishop2006}. 
+Use the expectation-maximization~\cite{bishop2006} algorithm to find the solution to optimisation problem~\eqref{eq:em:3}. The EM-algorithm instead of~$\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$ optimizes the lower bound $\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$.
+
+
+\paragraph{E--step.} In the E-step, the EM-algorithm solves the following optimization problem:
+\[
+\label{eq:em:new:3}
+\begin{aligned}
+\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right) \to \max_{q\left(\textbf{W}, \textbf{Z}\right)},
+\end{aligned}
+\]
+where~$\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta$ are fixed.
+
+Let a joint distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ satisfies the assumption of independence~$q\left(\mathbf{Z}, \mathbf{W}\right) = q\left(\mathbf{Z}\right)q\left(\mathbf{W}\right)$~\cite{bishop2006}. 
 The symbol~$\propto$ means that both sides are equal to up to an additive constant.
 First, find the distribution~$q\left(\textbf{Z}\right)$:
 \[
@@ -266,7 +313,7 @@ First, find the distribution~$q\left(\textbf{Z}\right)$:
 p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\textbf{w}_{k'}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\right) \right)}.
 \end{aligned}
 \]
-The distribution~$q\bigr(z_{ik}\bigr)$ is the Bernoulli distribution with probability~$z_{ik}$ from equation~\eqref{eq:em:4}.
+Using~\eqref{eq:em:4}, we get that distribution~$q\bigr(z_{ik}\bigr)$ is the Bernoulli distribution with probability~$z_{ik}$ from equation~\eqref{eq:em:4}.
 Second, find the distribution~$q\left(\textbf{W}\right)$:
 \[
 \label{eq:em:5}
@@ -277,7 +324,7 @@ Second, find the distribution~$q\left(\textbf{W}\right)$:
 &\propto \sum_{k=1}^{K}\left[\textbf{w}_{k}^{\mathsf{T}}\left(\textbf{A}_{k}^{-1}\textbf{w}_{k}^{0}+\beta\sum_{i=1}^{N}\textbf{x}_{i}y_{i}\mathsf{E}z_{ik}\right)-\frac{1}{2}\textbf{w}_{k}^{\mathsf{T}}\left(\textbf{A}_{k}^{-1}+\beta\sum_{i=1}^{N}\textbf{x}_{i}\textbf{x}_{i}^{\mathsf{T}}\right)\textbf{w}_{k}\right].
 \end{aligned}
 \]
-The distribution~$q\bigr(\mathbf{w}_{k}\bigr)$ is the normal distribution with mean~$\mathbf{m}_{k}$ and covariance matrix~$\mathbf{B}_k$:
+Using~\eqref{eq:em:5}, we get that distribution~$q\bigr(\mathbf{w}_{k}\bigr)$ is the normal distribution with mean~$\mathbf{m}_{k}$ and covariance matrix~$\mathbf{B}_k$:
 \[
 \label{eq:em:6}
 \begin{aligned}
@@ -285,7 +332,15 @@ The distribution~$q\bigr(\mathbf{w}_{k}\bigr)$ is the normal distribution with m
 \end{aligned}
 \]
 
-\paragraph{M--step.} 
+\paragraph{M--step.}
+In the M-step, the EM-algorithm solves the following optimization problem:
+\[
+\label{eq:em:new:3}
+\begin{aligned}
+\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right) \to \max_{\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta},
+\end{aligned}
+\]
+where~$q\left(\textbf{W}, \textbf{Z}\right)$ are fixed density function.
 The distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ is fixed, while the lower bound~$\mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$  is maximized with respect to the parameters~$\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta$:
 \[
 \label{eq:em:7}
@@ -296,9 +351,8 @@ The distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ is fixed, while the lowe
 &+ \sum_{k=1}^{K}\sum_{k'=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right)^{\mathsf{T}}\bm{\Xi}^{-1}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right) +\frac{1}{2}\log\det\bm{\Xi} -\frac{n}{2}\log{2\pi}\right].
 \end{aligned}
 \]
-To find the optimal parameters~$\textbf{V}$, use the gradient optimization algorithm.
-It convergences to some local maximum.
-Using~\eqref{eq:em:7}, we get
+First, to find the optimal parameters~$\textbf{V}$, use the gradient optimization algorithm. It convergences to some local maximum.
+Second, using~\eqref{eq:em:7}, we get optimal value for~$\textbf{A}_{k}$
 \[
 \label{eq:em:9}
 \begin{aligned}
@@ -306,7 +360,7 @@ Using~\eqref{eq:em:7}, we get
 \textbf{A}_{k} &= \mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} - \textbf{w}_{k}^{0}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}} - \mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{0\mathsf{T}} + \textbf{w}_{k}^{0}\textbf{w}_{k}^{0\mathsf{T}}.
 \end{aligned}
 \]
-Similarly, we get
+Similarly, we get optimal value for~$\beta$ and for~$\textbf{w}_{k}^{0}$
 \[
 \label{eq:em:10}
 \begin{aligned}
