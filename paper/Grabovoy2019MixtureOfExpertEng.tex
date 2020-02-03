@@ -31,7 +31,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{definition}{Definition}[section]
 
-%\numberwithin{equation}{section}
+\numberwithin{equation}{section}
 
 \newcommand*{\No}{No.}
 
@@ -289,7 +289,7 @@ Using~\eqref{eq:em:new:1}, we get lower bound of evidence:
 \]
 where~$\mathcal{L}\bigr(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr)$ is called lower bound of evidence.
 
-Use the expectation-maximization~\cite{bishop2006} algorithm to find the solution to optimisation problem~\eqref{eq:em:3}. The EM-algorithm instead of~$\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$ optimizes the lower bound~$\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$.
+Use the expectation-maximization~\cite{Dempster1977, bishop2006} algorithm to find the solution to optimisation problem~\eqref{eq:em:3}. The EM-algorithm instead of~$\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$ optimizes the lower bound~$\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$.
 
 
 \paragraph{E-step.} E-step solves the optimisation problem:
@@ -470,7 +470,7 @@ The multimodel with prior distribution for the parameters~$\hat{\mathbf{f}}_2$  
 The multimodel with prior regularisation~$\hat{\mathbf{f}}_3$ approximates circles more stable than multimodel~$\hat{\mathbf{f}}_2$.
 
 The fig.~\ref{experiment:st:2:2} shows the dependence of log-likelihood~\eqref{eq:st:new:1} on the EM-algorithm iteration number.
-The log-likelihood of multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ is growing faster than multimodel~$\hat{\mathbf{f}}_1$.  After the 20th iteration all three multimodels have the same log-likelihood.
+The log-likelihood of multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ is growing faster than multimodel~$\hat{\mathbf{f}}_1$.  After the $20$-th iteration all three multimodels have the same log-likelihood.
 
 The fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:5} show learning process for multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
 The fig.~\ref{experiment:st:2:5} shows multimodel~$\hat{\mathbf{f}}_1$, which does not approximate circles correctly.
@@ -553,129 +553,76 @@ The future work, plannes to improve the multimodel by adding a prior distributio
 
 \begin{thebibliography}{99}
 \bibitem{Tianqi2016}
-	\textit{Chen Tianqi, Guestrin Carlos} XGBoost: A Scalable Tree Boosting System~// KDD ’16 Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. 2016.
+	\textit{Tianqi~C., Carlos~G.} XGBoost: A Scalable Tree Boosting System~// Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. 2016.
 	
 \bibitem{Ishwaran2012}
-	\textit{Chen Xi, Ishwaran Hemant} Random Forests for Genomic Data Analysis~// Genomics. 2012. Issues. 99, No 6. pp. 323--329.
+	\textit{Xi~C., Hemant~I.} Random Forests for Genomic Data Analysis~// Genomics. 2012. Issues.~99. \No~6. P.~323--329.
 
 \bibitem{Yuksel2012}
-	\textit{Yuksel Seniha Esen, Wilson Joseph N., Gader Paul D} Twenty Years of Mixture of Experts~// IEEE Transactions on Neural Networks and Learning Systems. 2012. Issues. 23, No 8. pp. 1177--1193.
-
-\bibitem{Shazeer2017}
-	\textit{Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz} Outrageously large neural networks: the sparsely-gated mixture-of-experts layer~// ICLR, 2017.
+	\textit{Esen~Y.\,S., Wilson~J., Gader~P.\,D.} Twenty Years of Mixture of Experts~// IEEE Transactions on Neural Networks and Learning Systems. 2012. Issues.~23. \No~8. P.~1177--1193.
 
 \bibitem{Edward2002}
-	\textit{Rasmussen Carl Edward, Ghahramani Zoubin} Infinite Mixtures of Gaussian Process Experts~// Advances in Neural Information Processing Systems 14. 2002. pp. 881–888.
+	\textit{Rasmussen~C.\,E., Ghahramani~Z.} Infinite Mixtures of Gaussian Process Experts~// Advances in Neural Information Processing Systems 14. 2002. P.~881--888.
+
+\bibitem{Shazeer2017}
+	\textit{Shazeer~N., Mirhoseini~A., Maziarz~K.} Outrageously large neural networks: the sparsely-gated mixture-of-experts layer~//  International Conference on Learning Representations. 2017.
 	
 \bibitem{Jordan1994}
-	\textit{M.~I.~Jordan} Hierarchical mixtures of experts and the EM algorithm~// Neural Comput., vol. 6, no. 2, pp. 181–214, 1994.
-	
-\bibitem{Lima2007}
-	\textit{C.~A.~M.~Lima, A.~L.~V. Coelho, F.~J.~Von~Zuben} Hybridizing mixtures of experts with support vector machines: Investigation into nonlinear dynamic systems identification~// Inf. Sci., vol. 177, no. 10, pp. 2049–2074, 2007.
-
-\bibitem{Cao2003}
-	\textit{L.~Cao} Support vector machines experts for time series forecasting~// Neurocomputing, vol. 51, pp. 321–339, Apr. 2003.
-
-\bibitem{Dempster1977}
-	\textit{A. P. Dempster, N. M. Laird and D. B. Rubin} Maximum Likelihood from Incomplete Data via the EM Algorithm~// Journal of the Royal Statistical Society. Series B (Methodological), Vol. 39, No. 1 pp. 1-38, 1977.
+	\textit{Jordan~M.\,I.} Hierarchical mixtures of experts and the EM algorithm~// Neural Comput. 1994. Vol.~6, \No~2. P.~181--214.
 	
 \bibitem{Jordan1991}
-	\textit{M.~I.~Jordan, R.~A.~Jacobs} Hierarchies of adaptive experts~// in Advances in Neural Information Processing Systems. Cambridge, MA: MIT Press, 1991, pp. 985–992.
+	\textit{Jordan~M.\,I., Jacobs~R.\,A.} Hierarchies of adaptive experts~// In Advances in Neural Information Processing Systems. 1991. P.~985--992.
+	
+\bibitem{Lima2007}
+	\textit{Lima~C., Coelho~A., Zuben~F.\,J.} Hybridizing mixtures of experts with support vector machines: Investigation into nonlinear dynamic systems identification~// Inf. Sci. 2007. Vol.~177. \No~10. P.~2049--2074.
+
+\bibitem{Cao2003}
+	\textit{Cao~L.} Support vector machines experts for time series forecasting~// Neurocomputing. 2003. Vol.~51. P.~321--339.
 	
 \bibitem{Yumlu2003}
-	\textit{M.\,S.~Yumlu, F.\,S.~Gurgen,  N.~Okay} Financial time series prediction using mixture of experts~// in Proc. 18th Int. Symp. Comput. Inf. Sci., 2003, pp. 553--560.
+	\textit{Yumlu~M.\,S., Gurgen~F.\,S.,  Okay~N.} Financial time series prediction using mixture of experts~// In Proc. 18th Int. Symp. Comput. Inf. Sci. 2003. P.~553--560.
 	
 \bibitem{Cheung1995}
-	\textit{Y.~M.~Cheung, W.~M.~Leung, and L. Xu} Application of mixture of experts model to financial time series forecasting~// in Proc. Int. Conf. Neural Netw. Signal Process., 1995, pp. 1--4.
+	\textit{Cheung~Y.\,M., Leung~W.\,M., Xu~L.} Application of mixture of experts model to financial time series forecasting~// On Proc. Int. Conf. Neural Netw. Signal Process. 1995. P.~1--4.
 	
 \bibitem{Weigend2000}
-	\textit{A. S. Weigend, S. Shi} Predicting daily probability distributions of S\&P500 returns~// J. Forecast., vol. 19, no. 4, pp. 375--392, 2000.
+	\textit{Weigend~A.\,S., Shi~S.} Predicting daily probability distributions of S\&P500 returns~// J. Forecast. 2000. Vol.~19. \No~4. P.~375--392.
 	
 \bibitem{Ebrahimpour2009}
-	\textit{R. Ebrahimpour, M. R. Moradian, A. Esmkhani, F. M. Jafarlou} Recognition of Persian handwritten digits using characterization loci and mixture of experts~// J. Digital Content Technol. Appl., vol. 3, no. 3, pp. 42–46, 2009.
+	\textit{Ebrahimpour~R., Moradian~M.\,R., Esmkhani~A., Jafarlou~F.\,M.} Recognition of Persian handwritten digits using characterization loci and mixture of experts~// J. Digital Content Technol. Appl. 2009. Vol.~3. \No~3. P.~42--46.
 	
 \bibitem{Estabrooks2001}
-	\textit{A.~Estabrooks, N.~Japkowicz} A mixture-of-experts framework for text classification~//in Proc. Workshop Comput. Natural Lang. Learn., Assoc. Comput. Linguist., 2001, pp. 1--8.
+	\textit{Estabrooks~A., Japkowicz~N.} A mixture-of-experts framework for text classification~//In Proc. Workshop Comput. Natural Lang. Learn., Assoc. Comput. Linguist. 2001. P.~1--8.
 	
 \bibitem{Mossavat2010}
-	\textit{S. Mossavat, O. Amft, B. de Vries, P. Petkov, W. Kleijn} A Bayesian hierarchical mixture of experts approach to estimate speech quality~// in Proc. 2nd Int. Workshop Qual. Multimedia Exper., pp. 200--205., 2010
+	\textit{Mossavat~S., Amft~O., Petkov~Vries~B., Kleijn~W.} A Bayesian hierarchical mixture of experts approach to estimate speech quality~// In Proc. 2nd Int. Workshop Qual. Multimedia Exper. 2010. P.~200--205. 
 
 \bibitem{Peng1996}
-	\textit{F. Peng, R. A. Jacobs, M. A. Tanner} Bayesian inference in mixtures-of-experts and hierarchical mixtures-of-experts models with an application to speech recognition~// J. Amer. Stat. Assoc., vol. 91, no. 435, pp. 953–960, 1996.
+	\textit{Peng~F., Jacobs~R.\,A., Tanner~M.\,A.} Bayesian inference in mixtures-of-experts and hierarchical mixtures-of-experts models with an application to speech recognition~// J. Amer. Stat. Assoc. 1996. Vol.~91. \No~435. P. 953--960.
 	
 \bibitem{Tuerk2001}
-	\textit{A. Tuerk} The state based mixture of experts HMM with applications to the recognition of spontaneous speech~// Ph.D. thesis, Dept. Eng., Univ. Cambridge, Cambridge, U.K., 2001.
+	\textit{Tuerk~A.} The state based mixture of experts HMM with applications to the recognition of spontaneous speech. Ph.D. thesis. Cambridge: Univ. Cambridge, 2001.
 	
 \bibitem{Sminchisescu2007}
-	\textit{C. Sminchisescu, A. Kanaujia, and D. Metaxas} B M3 E: Discrimina- tive density propagation for visual tracking~// IEEE Trans. Pattern Anal. Mach. Intell., vol. 29, no. 11, pp. 2030–2044, 2007.
+	\textit{Sminchisescu~C., Kanaujia~A., Metaxas~D.} Discriminative density propagation for visual tracking~// IEEE Trans. Pattern Anal. Mach. Intell. 2007. Vol.~29. \No~11. P. 2030--2044.
 
+\bibitem{Bowyer2010}
+	\textit{Bowyer~K., Hollingsworth~K., Flynn~P.} A Survey of Iris Biometrics Research: 2008--2010.
+	
 \bibitem{Matveev2010}
-	\textit{I. Matveev} Detection of iris in image by interrelated maxima of brightness gradient projections~// Appl.Comput. Math. 9 (2), 252–257, 2010.
+	\textit{Matveev~I.} Detection of iris in image by interrelated maxima of brightness gradient projections~// Appl.Comput. Math. 2010. Vol.~9. \No~2. P. 252--257.
 
 \bibitem{Matveev2014}
-	\textit{I. Matveev, I. Simonenko}. Detecting precise iris boundaries by circular shortest path method~// Pattern Recognition and Image Analysis. 24. 304-309. 2014.
+	\textit{Matveev~I., Simonenko~I.}. Detecting precise iris boundaries by circular shortest path method~// Pattern Recognition and Image Analysis. 2014. Vol. 24. P. 304--309.
 	
-\bibitem{Bowyer2010}
-	\textit{K. Bowyer, K. Hollingsworth, P. Flynn} A Survey of Iris Biometrics Research: 2008–2010.
+\bibitem{Dempster1977}
+	\textit{Dempster~A.\,P., Laird~N.\,M., Rubin~D.\,B.} Maximum Likelihood from Incomplete Data via the EM Algorithm~// Journal of the Royal Statistical Society. Series B (Methodological). 1977. Vol. 39. \No~1 P. 1--38.
 	
 \bibitem{bishop2006}
-	\textit{Bishop C.} Pattern Recognition and Machine Learning.~---~Berlin: Springer, 2006. 758~p.
+	\textit{Bishop~C.} Pattern Recognition and Machine Learning. Berlin: Springer, 2006. P. 758.
 
  \end{thebibliography}
- 
- \appendix
 
-\begin{comment}
-\section{Постановка задачи нахождения параметров эллипса}\label{apendix:el}
-Задано бинарное изображение:
-\[
-\label{apendix:el:eq:1}
-\begin{aligned}
-\textbf{M} \in \{0,1\}^{m_1 \times m_2},
-\end{aligned}
-\]
-где~$0$ отвечает черной точке --- изображения,~$1$ --- белой точке фона.
-
-По изображению~$\textbf{M}$ строится выборка~$\textbf{C}$, элементами которой являются координаты~$x_i, y_i$ белых точек на картинке:
-\[
-\label{apendix:el:eq:2}
-\begin{aligned}
-\textbf{C} \in  \mathbb{R}^{N \times 2},
-\end{aligned}
-\]
-где~$N$ --- число черных точек на изображении~$\textbf{M}$.
-
-Обозначим~$x_0, y_0$ --- центр эллипса, который требуется найти на бинарном изображении~$\textbf{M}$, а~$a, b$ его коэффициенты вдоль координат. Элементы выборки~$\left(x_i, y_i\right)\in\textbf{C}$ являются геометрическим местом точек, которое задано уравнением эллипса:
-\[
-\label{apendix:el:eq:3}
-\begin{aligned}
-\left(x_i - x_0\right)^{2}+\frac{a^2}{b^2}\left(y_i-y_0\right)^2 = a^2.
-\end{aligned}
-\]
-Раскрыв скобки получим уравнение
-\[
-\label{apendix:el:eq:4}
-\begin{aligned}
-\left(2x_0\right)\cdot x_i + \left(\frac{2y_0a^2}{b^2}\right)\cdot y_i + \left(-\frac{a^2}{b^2}\right)y_{i}^{2} + \left(a^2-x_0^2-\frac{a^2}{b^2}y_0^2\right)\cdot1 = x_{i}^2.
-\end{aligned}
-\]
-Получаем задачу линейной регрессии для нахождения параметров окружности:
-\[
-\label{apendix:el:eq:5}
-\begin{aligned}
-\textbf{X}\textbf{w} \approx \textbf{y},  \quad \textbf{X} = \text{concat}\left[\textbf{C}, \left[y_1^2, y_2^2, \cdots, y_N^2\right]^{\mathsf{T}}, \textbf{1}\right], \quad \textbf{y} = [x_1^2, x_2^2, \cdots, x_N^2]^{\mathsf{T}},
-\end{aligned}
-\]
-где найденые оптимальные параметры линейной регрессии~$\textbf{w} = \bigr[w_1, w_2, w_3, w_4\bigr]^{\mathsf{T}}$ восстанавливают параметры окружности:
-\[
-\label{apendix:el:eq:6}
-\begin{aligned}
-x_0 = \frac{w_1}{2}, \quad y_0 = -\frac{w_2}{2w_3}, \quad a^2 = w_4-\frac{w_1}{2}-\frac{w_2^2}{4w_3}, \quad b^2 = -\frac{1}{w_3}\left(w_4-\frac{w_1}{2}-\frac{w_2^2}{4w_3}\right).
-\end{aligned}
-\]
-
-Решение уравнения~\eqref{apendix:el:eq:5} находит параметры единственного эллипса на изображении.
-\end{comment}
 
 \end{document}
 
