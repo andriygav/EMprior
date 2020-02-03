@@ -56,7 +56,7 @@ The mixture of experts is a set of experts and the gate function which weighs th
 The gate function is a neural network with softmax on the last layer. 
 The paper analyzes different prior distributions for each expert.
 The authors propose a method that takes into account the relationship between the prior distributions of different experts.
-The paper uses the EM algorithm for solving the optimization problem.
+The paper uses the EM algorithm for solving the optimisation problem.
 This paper proposes to use the mixture of experts for the problem of circles parameters estimation.
 Each expert fits one circle in the image.
 The experiment uses synthetic and real data to test the proposed method.
@@ -92,7 +92,7 @@ Examples of images are shown in fig.~\ref{example:1}.
 In this paper, each expert is a linear model.
 A gate function is a two-layer fully connected neural network.
 
-\section{Related work}
+\paragraph{Related work.}
 Many papers on a mixture of experts are devoted to the choice of a gateway function: softmax, the Dirichlet process~\cite{Edward2002}, a neural network~\cite{Shazeer2017} with softmax function on the last layer.
 Some papers are devoted to the choice of expert type. 
 Papers~\cite{Jordan1994, Jordan1991} analyze linear models as experts.
@@ -116,7 +116,7 @@ This data are binary image
 \textbf{M} \in \{0,1\}^{m_1 \times m_2},
 \end{aligned}
 \]
-where~$1$ is a black pixel, an image, and $0$ is a white pixel, the image background. 
+where~$1$ is a black pixel, an image, and~$0$ is a white pixel, the image background. 
 An image example is shown in fig.~\ref{example:1}.
 The image~$\textbf{M}$ is mapped to a set of coordinates~$\textbf{C}=\left\{x_i, y_i\right\}_{i=1}^{N}$. The pair of coordinates~$(x_i, y_i)$ is a black pixel in~$\textbf{M}$:
 \[
@@ -127,29 +127,29 @@ The image~$\textbf{M}$ is mapped to a set of coordinates~$\textbf{C}=\left\{x_i,
 \]
 where~$N$ is the number of black pixels.
 
-Let~$(x_0, y_0)$ be the center of the circle, and $r$ is radius of the circle.
- The coordinates $\left(x_i, y_i\right)\in\textbf{C}$ is a circle locus of points defined by
+Let~$(x_0, y_0)$ be the center of the circle, and~$r$ is radius of the circle.
+ The coordinates~$\left(x_i, y_i\right)\in\textbf{C}$ is a circle locus of points defined by
 \[
 \label{eq:st:cr:3}
 \begin{aligned}
-\left(x_i - x_0\right)^{2}+\left(y_i-y_0\right)^2 = r^2.
+\bigr(x_i - x_0\bigr)^{2}+\bigr(y_i-y_0\bigr)^2 = r^2.
 \end{aligned}
 \]
 Expand brackets:
 \[
 \label{eq:st:cr:4}
 \begin{aligned}
-(2x_0)\cdot x_i + (2y_0)\cdot y_i+(r^2-x_0^2-y_0^2)\cdot1 = x_{i}^2 + y_{i}^2.
+\left(2x_0\right)\cdot x_i + \left(2y_0\right)\cdot y_i+\left(r^2-x_0^2-y_0^2\right)\cdot1 = x_{i}^2 + y_{i}^2.
 \end{aligned}
 \]
 Rewrite equation~\eqref{eq:st:cr:4} to set the linear regressions problem for all points in the dataset:
 \[
 \label{eq:st:cr:5}
 \begin{aligned}
-\textbf{X}\textbf{w} \approx \textbf{y},  \quad \textbf{X} = \left[\textbf{C}, \textbf{1}\right], \quad \textbf{y} = [x_1^2+y_1^2, x_2^2+y_2^2, \cdots, x_N^2+y_N^2]^{\mathsf{T}}.
+\textbf{X}\textbf{w} \approx \textbf{y},  \quad \textbf{X} = \left[\textbf{C}, \textbf{1}\right], \quad \textbf{y} = \left[x_1^2+y_1^2, x_2^2+y_2^2, \cdots, x_N^2+y_N^2\right]^{\mathsf{T}}.
 \end{aligned}
 \]
-The parameters~$\textbf{w} = \bigr[w_1, w_2, w_3\bigr]^{\mathsf{T}}$ reconstruct the circle parameters~$x_0, y_0, r$:
+The parameters~$\textbf{w} = \left[w_1, w_2, w_3\right]^{\mathsf{T}}$ reconstruct the circle parameters~$x_0, y_0, r$:
 \[
 \label{eq:st:cr:6}
 \begin{aligned}
@@ -172,46 +172,46 @@ The data for this case is
 \textbf{X} \in \mathbb{R}^{N \times n}, \quad \textbf{y}\in \mathbb{R}^{N}
 \end{aligned}
 \]
-where~$N$ is a number of datum and~$n$ is a number of features. In this paper,~$n$ is equal to 3.
+where~$N$ is the sample size and~$n$ is the number of features. In this paper,~$n$ is equal to~$3$.
 
 \begin{definition}
 \label{def:1}
-A model~$\mathbf{f}$ is a local model on dataset~$\textbf{X}$ if~model $\mathbf{f}$ approximate some not empty subset~$\textbf{X}'\subset\textbf{X}$.
+A model~$\mathbf{f}$ is a local model on dataset~$\textbf{X}$ if~$\mathbf{f}$ approximates some no-empty subset~$\textbf{X}'\subset\textbf{X}$.
 \end{definition}
 
 \begin{definition}
 \label{def:2}
-Call the multimodel~$\hat{\mathbf{f}}$ a mixture of experts if
+Call the multimodel~$\hat{\mathbf{f}}$ a mixture of experts
 \[
 \label{eq:st:2}
 \begin{aligned}
-\hat{\mathbf{f}} = \sum_{k=1}^{K}\pi_{k}\mathbf{f}_k, \qquad \pi_{k}\left(\mathbf{x}, \mathbf{V}\right):\mathbb{R}^{n\times \left|\mathbf{V}\right|} \to [0, 1], \qquad \sum_{k=1}^{K}\pi_{k}\left(\mathbf{x}, \mathbf{V}\right) = 1,
+\hat{\mathbf{f}} = \sum_{k=1}^{K}\pi_{k}\mathbf{f}_k, \qquad \pi_{k}\bigr(\mathbf{x}, \mathbf{V}\bigr):\mathbb{R}^{n\times \left|\mathbf{V}\right|} \to [0, 1], \qquad \sum_{k=1}^{K}\pi_{k}\bigr(\mathbf{x}, \mathbf{V}\bigr) = 1,
 \end{aligned}
 \]
-where~$\mathbf{f}_k$ is a local model, $\pi_k$ is a gate function, vector~$\mathbf{w}_k$ is some parameters of the local model and~$\mathbf{V}$ is some parameters of the gate function.
+where~$\mathbf{f}_k$ is a local model,~$\pi_k$ is a gate function, vector~$\mathbf{w}_k$ is some parameters of the local model and~$\mathbf{V}$ is some parameters of the gate function.
 \end{definition}
 
-This paper asserts the local model a linear model. The gate function is the two--layer fully connected neural network
+This paper asserts the local model be linear model. The gate function is the two--layer fully connected neural network
 \[
 \label{eq:st:3}
 \begin{aligned}
-\mathbf{f}_k\left(\textbf{x}\right) = \textbf{w}_k^{\mathsf{T}}\textbf{x}, \quad
-\bm{\pi}\left(\mathbf{x}, \mathbf{V}\right) = \text{softmax}\bigr(\mathbf{V}_{1}^{\mathsf{T}}\bm{\sigma}\left(\mathbf{V}_2^{\mathsf{T}}\mathbf{x}\right)\bigr),
+\mathbf{f}_k\bigr(\textbf{x}\bigr) = \textbf{w}_k^{\mathsf{T}}\textbf{x}, \quad
+\bm{\pi}\bigr(\mathbf{x}, \mathbf{V}\bigr) = \text{softmax}\bigr(\mathbf{V}_{1}^{\mathsf{T}}\bm{\sigma}\bigr(\mathbf{V}_2^{\mathsf{T}}\mathbf{x}\bigr)\bigr),
 \end{aligned}
 \]
-where $\mathbf{V} = \bigr\{\mathbf{V}_1, \mathbf{V}_2\bigr\}$ is a set of the gate function parameters.
+where~$\mathbf{V} = \bigr\{\mathbf{V}_1, \mathbf{V}_2\bigr\}$ is a set of the gate function parameters.
 
-The paper proposes to use a probabilistic approach to describe a mixture of experts. Let~$\textbf{y}$ be a random variable with density function~$p\left(\textbf{y}|\textbf{X}\right)$. Let density~$p\left(\textbf{y}|\textbf{X}, \hat{\textbf{f}}\right) $ approximate truth density~$p\left(\textbf{y}|\textbf{X}\right)$:
+The paper proposes to use a probabilistic approach to describe a mixture of experts. Let~$\textbf{y}$ be a random variable with density function~$p\bigr(\textbf{y}|\textbf{X}\bigr)$. Let density~$p\bigr(\textbf{y}|\textbf{X}, \hat{\textbf{f}}\bigr)$ approximate truth density~$p\bigr(\textbf{y}|\textbf{X}\bigr)$:
 \[
 \label{eq:st:new:1}
 \begin{aligned}
-p\left(\textbf{y}|\textbf{X}, \hat{\textbf{f}}\right) = \prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_kp_{k}\left(y_{i}|\textbf{f}_{k}\left(\mathbf{x}_{i}\right)\right)\right),
+p\bigr(\textbf{y}|\textbf{X}, \hat{\textbf{f}}\bigr) = \prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_kp_{k}\bigr(y_{i}|\textbf{f}_{k}\bigr(\mathbf{x}_{i}\bigr)\bigr)\right),
 \end{aligned}
 \]
-where~$\hat{\textbf{f}}$ is the mixture of experts model and~$\textbf{f}_k, \bm{\pi}$ are defined by~\eqref{eq:st:3}.
+where~$\hat{\textbf{f}}$ is the mixture of experts and~$\textbf{f}_k, \bm{\pi}$ are defined by~\eqref{eq:st:3}.
 
 %Combining~\eqref{eq:st:2} and~\eqref{eq:st:3}, obtain the likelihood solution:
-Now if we suppose that~$\textbf{w}_k$ is the random variable with density function~$p^{k}\bigr(\mathbf{w}_k\bigr)$, we get full likelihood:
+Suppose that~$\textbf{w}_k$ is the random variable with density function~$p^{k}\bigr(\mathbf{w}_k\bigr)$, and get joint probability distribution of the target and the parameters:
 \[
 \label{eq:st:4}
 \begin{aligned}
@@ -219,7 +219,6 @@ p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}\bigr) = \prod_{k=1}^{K}p^{k
 \end{aligned}
 \]
 where~$\mathbf{W} = \bigr\{\mathbf{w}_1, \mathbf{w}_2, \cdots, \mathbf{w}_K\bigr\}.$
-
 The optimal parameters is delivered by the evidence maximisation:
 \[
 \label{eq:st:5}
@@ -228,98 +227,98 @@ The optimal parameters is delivered by the evidence maximisation:
 \end{aligned}
 \]
 
-\section{Probabilistic statement}
-To build a mixture of experts, set the following probabilistic statement for the dataset~\eqref{eq:st:1}:
+\section{Probabilistic statement of mixture of expert}
+To build the mixture of experts~(\ref{eq:st:2}, ~\ref{eq:st:4}), set the following probabilistic statement for the dataset~\eqref{eq:st:1}:
 
 \begin{enumerate}
-	\item[1)] the likelihood $p_{k}\left(y_{i}|\mathbf{w}_{k}, \mathbf{x}_{i}\right) = \mathcal{N}\left(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\right).$ Parameter~$\beta$ is a level of noise,
-	\item[2)] the prior distribution for the parameters $p^{k}\left(\mathbf{w}_{k}\right) = \mathcal{N}\left(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\right),$ where $\mathbf{w}^{0}_{k}$ is a vector of size $n\times1$ and~$\mathbf{A}_{k}$ is a covariance matrix,
-	\item[3)] the prior regularisation $p\left(\bm{\varepsilon}_{k,k'}|\bm{\Xi}\right) = \mathcal{N}\left(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\right),$ where~$\bm{\Xi}$ is a covariance matrix and $\bm{\varepsilon}_{k,k'} = \mathbf{w}_{k}^{0}-\mathbf{w}_{k'}^{0}.$
+	\item[1)] the likelihood~$p_{k}\bigr(y_{i}|\mathbf{w}_{k}, \mathbf{x}_{i}\bigr) = \mathcal{N}\bigr(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\bigr),$ where parameter~$\beta$ is the noise level,
+	\item[2)] the prior distribution for the parameters~$p^{k}\bigr(\mathbf{w}_{k}\bigr) = \mathcal{N}\bigr(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\bigr),$ where~$\mathbf{w}^{0}_{k}$ is a vector of size~$n\times1$ and~$\mathbf{A}_{k}$ is a covariance matrix,
+	\item[3)] the prior regularisation~$p\bigr(\bm{\varepsilon}_{k,k'}|\bm{\Xi}\bigr) = \mathcal{N}\bigr(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\bigr),$ where~$\bm{\Xi}$ is a covariance matrix and~$\bm{\varepsilon}_{k,k'} = \mathbf{w}_{k}^{0}-\mathbf{w}_{k'}^{0}.$
 \end{enumerate}
-The assumption 2) is a prior distribution for the parameters. It sets some restrictions to the model. For example, if~$\textbf{w}_k^{0}$ is [0,0,1], then the k-th local model prefers a circle with parameters $x_0=0, y_0=0, r=1$.
+The assumption 2) is the prior distribution for the parameters~$\textbf{w}_k$. It sets some restrictions to the model. For example, if~$\textbf{w}_k^{0}$ is [0,0,1], then the~$k$-th local model fits with the most probability a circle with parameters~$x_0=0, y_0=0, r=1$.
 
-The assumption 3) is a prior regularisation. It sets restrictions on the prior distribution parameters. For example if~$\text{diag}\left(\bm{\Xi}\right)=[0.001, 0.001, 1]$, then the centers of different circles, which corresponds to different local models are equals.
+The assumption 3) is a prior regularisation. It sets restrictions on the prior distribution parameters. For example, if~$\text{diag}\bigr(\bm{\Xi}\bigr)=[0.001, 0.001, 1]$, then the centers of different circles, which corresponds to different local models are equal.
 
-Combining assumptions~$1), 2), 3)$ and equation~\eqref{eq:st:4}, obtain new likelihood function:
+Combining assumptions~$1), 2), 3)$ and equation~\eqref{eq:st:4}, obtain the new likelihood:
 \[
 \label{eq:em:1}
 \begin{aligned}
-p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) = &\prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_{k}\mathcal{N}\left(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\right)\right)\cdot\\
-&\cdot\prod_{k=1}^{K}\mathcal{N}\left(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\right)\prod_{k,k'=1}^{K}\mathcal{N}\left(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\right),
+p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) = &\prod_{i=1}^{N}\left(\sum_{k=1}^{K}\pi_{k}\mathcal{N}\bigr(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\bigr)\right)\cdot\\
+&\cdot\prod_{k=1}^{K}\mathcal{N}\bigr(\mathbf{w}_{k}|\mathbf{w}^{0}_{k}, \mathbf{A}_{k}\bigr)\cdot\prod_{k,k'=1}^{K}\mathcal{N}\bigr(\bm{\varepsilon}_{k,k'}|\mathbf{0},  \bm{\Xi}\bigr),
 \end{aligned}
 \]
- where~$\mathbf{A} = \bigr\{\mathbf{A}_1, \cdots, \mathbf{A}_K\bigr\}.$
+ where~$\mathbf{A} = \left\{\mathbf{A}_1, \cdots, \mathbf{A}_K\right\}.$
  
-Introduce a binary matrix~$\mathbf{Z}$. Its element~$z_{ik}$ is equal to $1$ if and only if the $i$-th object corresponds to the $k$-th local model.
-Using the binary matrix~$\mathbf{Z}$ in~\eqref{eq:em:1} and take logarithm, obtain:
+Introduce a binary matrix~$\mathbf{Z}$. Its element~$z_{ik}$ is equal to~$1$ if and only if the~$i$-th object corresponds to the~$k$-th local model.
+Using the binary matrix~$\mathbf{Z}$ in~\eqref{eq:em:1} take logarithm and obtain
 \[
 \label{eq:em:2}
 \begin{aligned}
 \log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}&|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0},  \bm{\Xi}, \beta\bigr) =\\
-&= \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) - \frac{\beta}{2}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] +\\
+&= \sum_{i=1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_k\bigr(\textbf{x}_i, \textbf{V}\bigr) - \frac{\beta}{2}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] +\\
 &+ \sum_{k=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right) + \frac{1}{2}\log\det\textbf{A}^{-1}_{k} - \frac{n}{2}\log2\pi\right]+\\
 &+ \sum_{k=1}^{K}\sum_{k'=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right)^{\mathsf{T}}\bm{\Xi}^{-1}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right) +\frac{1}{2}\log\det \bm{\Xi} -\frac{n}{2}\log{2\pi}\right].
 \end{aligned}
 \]
-Set the new optimisation problem to optimise the evidence function, which is obtained by integrating formula~\eqref{eq:em:2} with respect to the parameters~$\textbf{W}, \textbf{Z}$:
+Set the new optimisation problem to optimise the evidence function. The function is obtained by integrating equation~\eqref{eq:em:2} over parameters~$\textbf{W}, \textbf{Z}$:
 \[
 \label{eq:em:3}
 \begin{aligned}
-\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta = \arg\max_{\mathbf{V}, \mathbf{W}^0, \textbf{A}, \beta} \log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr).
+\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta = \arg\max_{\mathbf{V}, \mathbf{W}^0, \textbf{A}, \beta} \int_{\textbf{W}, \textbf{Z}}\log p\bigr(\mathbf{y}, \textbf{Z}, \textbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)d\textbf{W}d\textbf{Z}.
 \end{aligned}
 \]
 \section{EM--algorithm as a solver of optimisation problem}
-Let~$q\left(\textbf{W}, \textbf{Z}\right)$ be some density distribution of parameters~$\textbf{W}, \textbf{Z}$. Rewrite evidence:
+Let~$q\bigr(\textbf{W}, \textbf{Z}\bigr)$ be some density distribution of parameters~$\textbf{W}, \textbf{Z}$. Rewrite the evidence:
 \[
 \label{eq:em:new:1}
 \begin{aligned}
-\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) &= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right) \log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)d\textbf{W}d\textbf{Z} =\\
-&= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\log \frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}d\textbf{W}d\textbf{Z}=\\
-&= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\log \frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)q\bigr(\textbf{W}, \textbf{Z}\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)q\bigr(\textbf{W}, \textbf{Z}\bigr)}d\textbf{W}d\textbf{Z}=\\
-&= \int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}{q\bigr(\textbf{W}, \textbf{Z}\bigr)}d\textbf{W}d\textbf{Z}+\\
-&+\int_{\textbf{W}, \textbf{Z}} q\left(\textbf{W}, \textbf{Z}\right)\frac{q\bigr(\textbf{W}, \textbf{Z}\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}d\textbf{W}d\textbf{Z}=\\
-&=\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)+\mathsf{D}_{KL}\left(q\left(\textbf{W}, \textbf{Z}\right)||p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)\right)
+\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) &= \int_{\textbf{W}, \textbf{Z}} q\bigr(\textbf{W}, \textbf{Z}\bigr) \log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)d\textbf{W}d\textbf{Z} =\\
+&= \int_{\textbf{W}, \textbf{Z}} q\bigr(\textbf{W}, \textbf{Z}\bigr)\log \frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}d\textbf{W}d\textbf{Z}=\\
+&= \int_{\textbf{W}, \textbf{Z}} q\bigr(\textbf{W}, \textbf{Z}\bigr)\log \frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)q\bigr(\textbf{W}, \textbf{Z}\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)q\bigr(\textbf{W}, \textbf{Z}\bigr)}d\textbf{W}d\textbf{Z}=\\
+&= \int_{\textbf{W}, \textbf{Z}} q\bigr(\textbf{W}, \textbf{Z}\bigr)\frac{p\bigr(\mathbf{y}, \textbf{W}, \textbf{Z}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}{q\bigr(\textbf{W}, \textbf{Z}\bigr)}d\textbf{W}d\textbf{Z}+\\
+&+\int_{\textbf{W}, \textbf{Z}} q\bigr(\textbf{W}, \textbf{Z}\bigr)\frac{q\bigr(\textbf{W}, \textbf{Z}\bigr)}{p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)}d\textbf{W}d\textbf{Z}=\\
+&=\mathcal{L}\bigr(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr)+\mathsf{D}_{KL}\left(q\bigr(\textbf{W}, \textbf{Z}\bigr)||p\bigr(\textbf{W}, \textbf{Z}|\mathbf{y}, \mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)\right)
 \end{aligned}
 \]
 Using~\eqref{eq:em:new:1}, we get lower bound of evidence:
 \[
 \label{eq:em:new:2}
 \begin{aligned}
-\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)\geq \mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right),
+\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)\geq \mathcal{L}\bigr(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr),
 \end{aligned}
 \]
-where~$\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$ is called lower bound of evidence.
+where~$\mathcal{L}\bigr(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr)$ is called lower bound of evidence.
 
-Use the expectation-maximization~\cite{bishop2006} algorithm to find the solution to optimisation problem~\eqref{eq:em:3}. The EM-algorithm instead of~$\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$ optimizes the lower bound $\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$.
+Use the expectation-maximization~\cite{bishop2006} algorithm to find the solution to optimisation problem~\eqref{eq:em:3}. The EM-algorithm instead of~$\log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)$ optimizes the lower bound~$\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$.
 
 
-\paragraph{E--step.} In the E-step, the EM-algorithm solves the following optimization problem:
+\paragraph{E-step.} E-step solves the optimisation problem:
 \[
 \label{eq:em:new:3}
 \begin{aligned}
-\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right) \to \max_{q\left(\textbf{W}, \textbf{Z}\right)},
+\mathcal{L}\bigr(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr) \to \max_{q\bigr(\textbf{W}, \textbf{Z}\bigr)},
 \end{aligned}
 \]
 where~$\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta$ are fixed.
 
-Let a joint distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ satisfies the assumption of independence~$q\left(\mathbf{Z}, \mathbf{W}\right) = q\left(\mathbf{Z}\right)q\left(\mathbf{W}\right)$~\cite{bishop2006}. 
+Let the joint distribution~$q\bigr(\mathbf{Z}, \mathbf{W}\bigr)$ satisfies the assumption of independence~$q\bigr(\mathbf{Z}, \mathbf{W}\bigr) = q\bigr(\mathbf{Z}\bigr)q\bigr(\mathbf{W}\bigr)$~\cite{bishop2006}. 
 The symbol~$\propto$ means that both sides are equal to up to an additive constant.
-First, find the distribution~$q\left(\textbf{Z}\right)$:
+First, find the distribution~$q\bigr(\textbf{Z}\bigr)$:
 \[
 \label{eq:em:4}
 \begin{aligned}
-\log q\left(\textbf{Z}\right) &= \mathsf{E}_{q/\textbf{Z}} \log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)  \propto\\
-&\propto \sum_{i+1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(y_{i}^{2} -\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right) + \frac{1}{2}\log\frac{\beta}{2\pi}\right]\\
-p\left(z_{ik} = 1\right) &= \frac{\exp\left(\log\pi_{k}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\right)\right)}{\sum_{k'=1}^{K}\exp\left(\log\pi_{k'}\left(\textbf{x}_{i}, \textbf{V}\right) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\textbf{w}_{k'}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\right) \right)}.
+\log q\bigr(\textbf{Z}\bigr) &= \mathsf{E}_{q/\textbf{Z}} \log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr)  \propto\\
+&\propto \sum_{i+1}^{N}\sum_{k=1}^{K}z_{ik}\left[\log\pi_{k}\bigr(\textbf{x}_{i}, \textbf{V}\bigr) - \frac{\beta}{2}\left(y_{i}^{2} -\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right) + \frac{1}{2}\log\frac{\beta}{2\pi}\right]\\
+p\bigr(z_{ik} = 1\bigr) &= \frac{\exp\bigr(\log\pi_{k}\bigr(\textbf{x}_{i}, \textbf{V}\bigr) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\right)\bigr)}{\sum_{k'=1}^{K}\exp\bigr(\log\pi_{k'}\bigr(\textbf{x}_{i}, \textbf{V}\bigr) - \frac{\beta}{2}\left(\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\textbf{w}_{k'}^{\mathsf{T}}\textbf{x}_{i} - \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k'}\right)\bigr)}.
 \end{aligned}
 \]
 Using~\eqref{eq:em:4}, we get that distribution~$q\bigr(z_{ik}\bigr)$ is the Bernoulli distribution with probability~$z_{ik}$ from equation~\eqref{eq:em:4}.
-Second, find the distribution~$q\left(\textbf{W}\right)$:
+Second, find the distribution~$q\bigr(\textbf{W}\bigr)$:
 \[
 \label{eq:em:5}
 \begin{aligned}
-\log q\left(\textbf{W}\right) &= \mathsf{E}_{q/\textbf{W}}\log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) \propto\\
-&\propto \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_{k}\left(\textbf{x}_{i, \textbf{V}}\right) - \frac{\beta}{2}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] + \\
+\log q\bigr(\textbf{W}\bigr) &= \mathsf{E}_{q/\textbf{W}}\log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) \propto\\
+&\propto \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_{k}\bigr(\textbf{x}_{i, \textbf{V}}\bigr) - \frac{\beta}{2}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] + \\
 &+ \sum_{k=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right) + \frac{1}{2}\log\det\textbf{A}^{-1}_{k} - \frac{n}{2}\log2\pi\right] \\
 &\propto \sum_{k=1}^{K}\left[\textbf{w}_{k}^{\mathsf{T}}\left(\textbf{A}_{k}^{-1}\textbf{w}_{k}^{0}+\beta\sum_{i=1}^{N}\textbf{x}_{i}y_{i}\mathsf{E}z_{ik}\right)-\frac{1}{2}\textbf{w}_{k}^{\mathsf{T}}\left(\textbf{A}_{k}^{-1}+\beta\sum_{i=1}^{N}\textbf{x}_{i}\textbf{x}_{i}^{\mathsf{T}}\right)\textbf{w}_{k}\right].
 \end{aligned}
@@ -332,31 +331,30 @@ Using~\eqref{eq:em:5}, we get that distribution~$q\bigr(\mathbf{w}_{k}\bigr)$ is
 \end{aligned}
 \]
 
-\paragraph{M--step.}
-In the M-step, the EM-algorithm solves the following optimization problem:
+\paragraph{M-step.} M-step solves the optimisation problem:
 \[
 \label{eq:em:new:3}
 \begin{aligned}
-\mathcal{L}\left(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right) \to \max_{\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta},
+\mathcal{L}\bigr(q, \textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr) \to \max_{\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta},
 \end{aligned}
 \]
-where~$q\left(\textbf{W}, \textbf{Z}\right)$ are fixed density function.
-The distribution~$q\left(\mathbf{Z}, \mathbf{W}\right)$ is fixed, while the lower bound~$\mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)$  is maximized with respect to the parameters~$\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta$:
+where~$q\bigr(\textbf{W}, \textbf{Z}\bigr)$ are fixed density function.
+The distribution~$q\bigr(\mathbf{Z}, \mathbf{W}\bigr)$ is fixed, while the lower bound~$\mathcal{L}\bigr(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr)$  is maximized with respect to the parameters~$\mathbf{V}, \mathbf{W}^0, \textbf{A},  \beta$:
 \[
 \label{eq:em:7}
 \begin{aligned}
-\mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right) &= \mathsf{E}_{q}\log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) =  \\
-&= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_k\left(\textbf{x}_i, \textbf{V}\right) - \frac{\beta}{2}\mathsf{E}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] +\\
+\mathcal{L}\bigr(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr) &= \mathsf{E}_{q}\log p\bigr(\mathbf{y}, \mathbf{Z}, \mathbf{W}|\mathbf{X}, \mathbf{V}, \textbf{A}, \textbf{W}^{0}, \bm{\Xi}, \beta\bigr) =  \\
+&= \sum_{i=1}^{N}\sum_{k=1}^{K}\mathsf{E}z_{ik}\left[\log\pi_k\bigr(\textbf{x}_i, \textbf{V}\bigr) - \frac{\beta}{2}\mathsf{E}\left(y_{i} - \textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right)^{2} + \frac{1}{2}\log\frac{\beta}{2\pi}\right] +\\
 &+ \sum_{k=1}^{K}\left[-\frac{1}{2}\mathsf{E}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}}\textbf{A}_{k}^{-1}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right) + \frac{1}{2}\log\det\textbf{A}^{-1}_{k} - \frac{n}{2}\log2\pi\right] +\\
 &+ \sum_{k=1}^{K}\sum_{k'=1}^{K}\left[-\frac{1}{2}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right)^{\mathsf{T}}\bm{\Xi}^{-1}\left(\textbf{w}_{k}^{0}-\textbf{w}_{k'}^{0}\right) +\frac{1}{2}\log\det\bm{\Xi} -\frac{n}{2}\log{2\pi}\right].
 \end{aligned}
 \]
-First, to find the optimal parameters~$\textbf{V}$, use the gradient optimization algorithm. It convergences to some local maximum.
+First, to find the optimal parameters~$\textbf{V}$, use the gradient optimisation algorithm. It convergences to some local maximum.
 Second, using~\eqref{eq:em:7}, we get optimal value for~$\textbf{A}_{k}$
 \[
 \label{eq:em:9}
 \begin{aligned}
-\frac{\partial \mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)}{\partial \textbf{A}^{-1}_k} &=  \frac{1}{2}\textbf{A}_{k} - \frac{1}{2}\mathsf{E}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}} = 0,\\
+\frac{\partial \mathcal{L}\bigr(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr)}{\partial \textbf{A}^{-1}_k} &=  \frac{1}{2}\textbf{A}_{k} - \frac{1}{2}\mathsf{E}\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)\left(\textbf{w}_{k} - \textbf{w}_{k}^{0}\right)^{\mathsf{T}} = 0,\\
 \textbf{A}_{k} &= \mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}} - \textbf{w}_{k}^{0}\mathsf{E}\textbf{w}_{k}^{\mathsf{T}} - \mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{0\mathsf{T}} + \textbf{w}_{k}^{0}\textbf{w}_{k}^{0\mathsf{T}}.
 \end{aligned}
 \]
@@ -364,61 +362,55 @@ Similarly, we get optimal value for~$\beta$ and for~$\textbf{w}_{k}^{0}$
 \[
 \label{eq:em:10}
 \begin{aligned}
-\frac{\partial \mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)}{\partial \beta} &= \sum_{k=1}^{K}\sum_{i=1}^{N}\left(\frac{1}{\beta}\mathsf{E}z_{ik}-\frac{1}{2}\mathsf{E}z_{ik}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\right) = 0,\\
+\frac{\partial \mathcal{L}\bigr(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr)}{\partial \beta} &= \sum_{k=1}^{K}\sum_{i=1}^{N}\left(\frac{1}{\beta}\mathsf{E}z_{ik}-\frac{1}{2}\mathsf{E}z_{ik}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}+\textbf{x}_{i}^{\mathsf{T}}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\right) = 0,\\
 \frac{1}{\beta}&=\frac{1}{N}\sum_{i=1}^{N}\sum_{k=1}^{K}\left[y_{i}^{2}-2y_{i}\textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k} + \textbf{x}_{i}^{\mathsf{T}}\mathsf{E}\textbf{w}_{k}\textbf{w}_{k}^{\mathsf{T}}\textbf{x}_{i}\right]\mathsf{E}z_{ik}.
 \end{aligned}
 \]
 \[
 \label{eq:em:11}
 \begin{aligned}
-\frac{\partial \mathcal{L}\left(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\right)}{\partial \mathbf{w}_k^0} &= \mathbf{A}_k^{-1}\bigr(\mathsf{E}\mathbf{w}_k - \mathbf{w}_{k}^{0}\bigr) + \bm{\Xi}\sum_{k'=1}^{K}\bigr[\mathbf{w}_{k'}^{0} -\mathbf{w}_{k}^{0}\bigr] = 0,\\
+\frac{\partial \mathcal{L}\bigr(\textbf{V}, \textbf{W}^{0}, \textbf{A}, \beta\bigr)}{\partial \mathbf{w}_k^0} &= \mathbf{A}_k^{-1}\left(\mathsf{E}\mathbf{w}_k - \mathbf{w}_{k}^{0}\right) + \bm{\Xi}\sum_{k'=1}^{K}\bigr[\mathbf{w}_{k'}^{0} -\mathbf{w}_{k}^{0}\bigr] = 0,\\
 \textbf{w}_{k}^{0} &=\left[\textbf{A}_{k}^{-1}+\left(K-1\right)\bm{\Xi}\right]^{-1}\left(\textbf{A}^{-1}_{k}\mathsf{E}\textbf{w}_{k}+\bm{\Xi}\sum_{k'=1,~k'\not=k}^{K}\textbf{w}_{k'}^{0}\right).
 \end{aligned}
 \]
-Formulas~(\ref{eq:em:4}--\ref{eq:em:11}) define an iterative procedure, which convergence to some local maximum of the optimization problem~\eqref{eq:em:3}.
+Formulas~(\ref{eq:em:4}--\ref{eq:em:11}) define an iterative procedure, which convergence to some local maximum of the optimisation problem~\eqref{eq:em:3}.
 
 \section{Computational experiment}
-Computational experiment analyzes the quality of different multimodels for circle approximation.
-The experiment analyzes next multimodels: multimodel~$\mathfrak{M}_1$ without prior distribution for the parameters, multimodel~$\mathfrak{M}_2$ with prior distribution~\eqref{eq:ce:1} for the parameters and multimodel~$\mathfrak{M}_3$ with prior regularisation.
-The approximation quality of model~$\mathfrak{M}_i$ :
+The computational experiment analyzes quality of various multimodels for circle approximation.
+The experiment analyzes next multimodels: multimodel~$\hat{\mathbf{f}}_1$ without prior distribution for the parameters, multimodel~$\hat{\mathbf{f}}_2$ with prior distribution~\eqref{eq:ce:1} for the parameters and multimodel~$\hat{\mathbf{f}}_3$ with prior regularisation.
+The approximation quality of model~$\hat{\mathbf{f}}_i$ is
 \[
 \label{eq:ce:ex:0:1}
 \begin{aligned}
-\mathcal{S}_{\mathfrak{M}_i} = \sum_{k=1}^{K}\bigr(x^{k}_{0}-x^{k}_{\text{pr}}\bigr)^2+\bigr(y^{k}_{0}-y^{k}_{\text{pr}}\bigr)^2+\bigr(r^{k}-r^{k}_{\text{pr}}\bigr)^2,
+\mathcal{S}_{\hat{\mathbf{f}}_i} = \sum_{k=1}^{K}\bigr(x^{k}_{0}-x^{k}_{\text{pr}}\bigr)^2+\bigr(y^{k}_{0}-y^{k}_{\text{pr}}\bigr)^2+\bigr(r^{k}-r^{k}_{\text{pr}}\bigr)^2,
 \end{aligned}
 \]
-where~$x^{k}_0, y^{k}_0, r^{k}$ are the true center and radius for k-th circle,  $x^{k}_{\text{pr}}, y^{k}_{\text{pr}}, r^{k}_{\text{pr}}$ are the predicted center and radius for k-th circle.
+where~$x^{k}_0, y^{k}_0, r^{k}$ are the true center and radius for $k$-th circle,~$x^{k}_{\text{pr}}, y^{k}_{\text{pr}}, r^{k}_{\text{pr}}$ are the predicted center and radius for $k$-th circle.
 
-For comparing models with various prior distribution, we are using log-likelihood without any priors:
-\[
-\label{eq:ce:st:2:1}
-\begin{aligned}
-\log p\bigr(\mathbf{y}|\mathbf{W}, \mathbf{X}, \mathbf{V}, \beta\bigr) = \sum_{k=1}^{K}\sum_{i=1}^{N}\pi_{k}\bigr(\mathbf{x}_i, \mathbf{V}\bigr)\left[-\frac{\beta}{2}\left(y_i-\mathbf{w}^{\mathsf{T}}\mathbf{x}_i\right)^2-\frac{1}{2}\log{2\pi}+\frac{1}{2}\log\beta\right].
-\end{aligned}
-\]
-The prior distribution for the parameters in the experiment:
+To compare models with various prior distribution, use the log-likelihood without any priors~\eqref{eq:st:new:1}.
+The prior distribution for the parameters in the experiment is
 \[
 \label{eq:ce:1}
 \begin{aligned}
-p^{1}\left(\textbf{w}_1\right)\sim\mathcal{N}\left(\textbf{w}^{0}_{1}, \textbf{I}\right), \quad p^{2}\left(\textbf{w}_2\right)\sim\mathcal{N}\left(\textbf{w}^{0}_{2}, \textbf{I}\right),
+p^{1}\bigr(\textbf{w}_1\bigr)\sim\mathcal{N}\bigr(\textbf{w}^{0}_{1}, \textbf{I}\bigr), \quad p^{2}\bigr(\textbf{w}_2\bigr)\sim\mathcal{N}\bigr(\textbf{w}^{0}_{2}, \textbf{I}\bigr),
 \end{aligned}
 \]
-where $\textbf{w}^{0}_1 = [0, 0, 0.1],\ \textbf{w}^{0}_2 = [0, 0, 2]$.
+where~$\textbf{w}^{0}_1 = [0, 0, 0.1],\ \textbf{w}^{0}_2 = [0, 0, 2]$.
 
-\paragraph{Synthetic data with different types of noise in the image.}
+\paragraph{Synthetic data with various types of noise in the image.}
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_synthetic}
-\caption{A multimodel depending on different prior distribution and depending on different noise levels: (a)--(c) multimodel with prior regularization; (d)--(g) multimodel with simple prior; (e)--(j) multimodel without any priors.}
+\caption{The multimodel dependes on different prior distribution and dependes on different noise levels: (a)--(c) multimodel with prior regularization; (d)--(g) multimodel with simple prior; (e)--(j) multimodel without any priors.}
 \label{experiment:1}
 \end{figure}
-The computational experiment compares quality of mixture of experts~$\mathfrak{M}_1, \mathfrak{M}_2, \mathfrak{M}_3$ on the synthetic dataset.
+The computational experiment compares quality of mixture of experts~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ on a synthetic dataset.
 
-Synthetic data was generated as two concentric circles with different noise levels.
+The synthetic data were generated as two concentric circles with different noise levels.
 The Synthetic~1 is the image without any noises, the Synthetic~2 is the image with a noise radius and the Synthetic~3 is an image with uniform noise.
 
-The fig.~\ref{experiment:1} shows results of multimodels~$\mathfrak{M}_1, \mathfrak{M}_2, \mathfrak{M}_3$.
-All multimodels did 50 iterations of the EM-algorithm.
-Multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ approximate circles better than multimodel~$\mathfrak{M}_1$. The tab.~\ref{tb:ce:1} shows the approximation quality~\eqref{eq:ce:ex:0:1} for all multimodels.
+The fig.~\ref{experiment:1} shows results of multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
+All multimodels run 50 iterations of the EM-algorithm.
+Multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate circles better than multimodel~$\hat{\mathbf{f}}_1$. Tab.~\ref{tb:ce:1} shows the approximation quality~\eqref{eq:ce:ex:0:1} for all multimodels.
 
 \begin{table}[h!t]
 \begin{center}
@@ -426,7 +418,7 @@ Multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ approximate circles better than mul
 \label{tb:ce:1}
 \begin{tabular}{|c|c|c|c|}
 \hline
-	Dataset & $\mathcal{S}_{\mathfrak{M}_1}$ & $\mathcal{S}_{\mathfrak{M}_2} $& $\mathcal{S}_{\mathfrak{M}_3} $\\
+	Dataset & $\mathcal{S}_{\hat{\mathbf{f}}_1}$ & $\mathcal{S}_{\hat{\mathbf{f}}_2} $& $\mathcal{S}_{\hat{\mathbf{f}}_3} $\\
 	\hline
 	\multicolumn{1}{|l|}{Synthetic~1}
 	& $10^{-5}$& $10^{-5}$& $10^{-5}$\\
@@ -441,7 +433,7 @@ Multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ approximate circles better than mul
 \end{center}
 \end{table}
 
-\paragraph{Learning process on synthetic data.}
+\paragraph{Analysis of convergence on synthetic data.}
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_synthetic_param_progress}
 \caption{The dependence of center and radius on the iteration number: (a)--(b) multimodel with prior regularization; (e)--(d) multimodel with simple prior; (e)--(f) multimodel without any priors.}
@@ -450,41 +442,41 @@ Multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ approximate circles better than mul
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_synt_likelihood_progress}
-\caption{The dependence of log-likelihood~\eqref{eq:ce:st:2:1} on the iteration number.}
+\caption{The dependence of log-likelihood~\eqref{eq:st:new:1} on the iteration number.}
 \label{experiment:st:2:2}
 \end{figure}
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_synt_regular_progress}
-\caption{Learning process visualisation for the multimodel with prior regularisation.}
+\caption{Visualization of convergence for the multimodel with prior regularisation.}
 \label{experiment:st:2:3}
 \end{figure}
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_synt_prior_progress}
-\caption{Learning process visualisation for the multimodel with simple prior.}
+\caption{Visualization of convergence for the multimodel with simple prior.}
 \label{experiment:st:2:4}
 \end{figure}
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_synt_not_prior_progress}
-\caption{Learning process visualisation for the multimodel without any priors.}
+\caption{Visualization of convergence for the multimodel without any priors.}
 \label{experiment:st:2:5}
 \end{figure}
-The experiment analyzes multimodels~$\mathfrak{M}_1, \mathfrak{M}_2, \mathfrak{M}_3$ during the EM-algorithm convergence. Multimodels were analysed on the synthetic dataset~Synthetic~3.
+The experiment analyzes multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ during the EM-algorithm convergence. Multimodels were analysed on the synthetic dataset~Synthetic~3.
 
 The fig.~\ref{experiment:st:2:1} shows the dependence of the radius and center on the EM-algorithm iteration number.
-The multimodel with prior distribution for the parameters~$\mathfrak{M}_2$  approximates circles better than multimodel~$\mathfrak{M}_1$ without any priors.
-The multimodel with prior regularisation~$\mathfrak{M}_3$ approximates circles more stable than multimodel~$\mathfrak{M}_2$.
+The multimodel with prior distribution for the parameters~$\hat{\mathbf{f}}_2$  approximates circles better than multimodel~$\hat{\mathbf{f}}_1$ without any priors.
+The multimodel with prior regularisation~$\hat{\mathbf{f}}_3$ approximates circles more stable than multimodel~$\hat{\mathbf{f}}_2$.
 
-The fig.~\ref{experiment:st:2:2} shows the dependence of log-likelihood~\eqref{eq:ce:st:2:1} on the EM-algorithm iteration number.
-The log-likelihood of multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ is growing faster than multimodel~$\mathfrak{M}_1$.  After the 20th iteration all three multimodels have the same log-likelihood.
+The fig.~\ref{experiment:st:2:2} shows the dependence of log-likelihood~\eqref{eq:st:new:1} on the EM-algorithm iteration number.
+The log-likelihood of multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ is growing faster than multimodel~$\hat{\mathbf{f}}_1$.  After the 20th iteration all three multimodels have the same log-likelihood.
 
-The fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:5} show learning process for multimodels~$\mathfrak{M}_1, \mathfrak{M}_2, \mathfrak{M}_3$.
-The fig.~\ref{experiment:st:2:5} shows multimodel~$\mathfrak{M}_1$, which does not approximate circles correctly.
-The fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:4} show multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$, which approximate circles correctly.
+The fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:5} show learning process for multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
+The fig.~\ref{experiment:st:2:5} shows multimodel~$\hat{\mathbf{f}}_1$, which does not approximate circles correctly.
+The fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:4} show multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$, which approximate circles correctly.
 
-The experiment shows that multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ with prior distribution for the parameters approximate circles better than multimodel~$\mathfrak{M}_1$ without any priors.
+The experiment shows that multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ with prior distribution for the parameters approximate circles better than multimodel~$\hat{\mathbf{f}}_1$ without any priors.
 
 
 \paragraph{Multimodels analysis depending on the noise level.} 
@@ -496,21 +488,21 @@ The experiment shows that multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ with prio
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_synt_likelihood_progress_noise}
-\caption{The dependence of log-likelihood~\eqref{eq:ce:st:2:1} on the noise level.}
+\caption{The dependence of log-likelihood~\eqref{eq:st:new:1} on the noise level.}
 \label{experiment:st:3:2}
 \end{figure}
 
-The experiment analyzes dependence of multimodels~$\mathfrak{M}_1, \mathfrak{M}_2, \mathfrak{M}_3$ on the noise level. 
+The experiment analyzes dependence of multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ on the noise level. 
 Multimodels were analysed on the synthetic dataset~Synthetic~1, with adding various noise level.
-The lowest noise level is equal to $0$, when no noise. The highest noise level is equal to $1$, when number of noise datum is equal to number of point in circles.
+The lowest noise level is equal to~$0$, when no noise. The highest noise level is equal to~$1$, when number of noise datum is equal to number of point in circles.
 
 The fig.~\ref{experiment:st:3:1} shows the dependence of center and radius on the noise level. It shows that circle radius increases with increasing noise level. 
-The multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ approximate circles center correctly, but the multimodel~$ \mathfrak{M}_3$ is more stable.
+The multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate circles center correctly, but the multimodel~$ \hat{\mathbf{f}}_3$ is more stable.
 
-The fig.~\ref{experiment:st:3:2} shows the dependence of log-likelihood~\eqref{eq:ce:st:2:1} on the noise level. 
-It shows that log-likelihood~\eqref{eq:ce:st:2:1} is the same for all multimodels, but the fig.~\ref{experiment:st:3:1} shows that the approximation quality~\eqref{eq:ce:ex:0:1} depends on multimodels.
+The fig.~\ref{experiment:st:3:2} shows the dependence of log-likelihood~\eqref{eq:st:new:1} on the noise level. 
+It shows that log-likelihood~\eqref{eq:st:new:1} is the same for all multimodels, but the fig.~\ref{experiment:st:3:1} shows that the approximation quality~\eqref{eq:ce:ex:0:1} depends on multimodels.
 
-This part of the experiment shows that multimodel~$\mathfrak{M}_3$ with prior regularisation is the most stable model.
+This part of the experiment shows that multimodel~$\hat{\mathbf{f}}_3$ with prior regularisation is the most stable model.
 
 \paragraph{Real data.}
 \begin{figure}[h!t]\center
@@ -519,48 +511,45 @@ This part of the experiment shows that multimodel~$\mathfrak{M}_3$ with prior re
 \label{experiment:2}
 \end{figure}
 
-This part of the experiment analyzes multimodels~$\mathfrak{M}_1, \mathfrak{M}_2, \mathfrak{M}_3$ on the real data.
+This part of the experiment analyzes multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ on the real data.
 
 The fig.~\ref{experiment:2} shows the result of different multimodels.
-The multimodel~$\mathfrak{M}_1$ approximates incorrectly one of the circles.
-The multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ approximate both circles correctly.
+The multimodel~$\hat{\mathbf{f}}_1$ approximates incorrectly one of the circles.
+The multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate both circles correctly.
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_real_not_prior}
-\caption{Learning process visualisation for the multimodel without any priors.}
+\caption{Visualization of convergence for the multimodel without any priors.}
 \label{experiment:3}
 \end{figure}
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_real_prior}
-\caption{Learning process visualisation for the multimodel with simple prior.}
+\caption{Visualization of convergence for the multimodel with simple prior.}
 \label{experiment:4}
 \end{figure}
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/experiment_real_regular}
-\caption{Learning process visualisation for the multimodel with prior regularisation.}
+\caption{Visualization of convergence for the multimodel with prior regularisation.}
 \label{experiment:5}
 \end{figure}
 
-The fig.~\ref{experiment:3}-\ref{experiment:5} show learning process for multimodels~$\mathfrak{M}_1, \mathfrak{M}_2, \mathfrak{M}_3$.
-The fig.~\ref{experiment:3} shows multimodel~$\mathfrak{M}_1$.
-The fig.~\ref{experiment:4} shows multimodel~$\mathfrak{M}_2$.
-The fig.~\ref{experimen:5} shows multimodel~$\mathfrak{M}_3$.
+The fig.~\ref{experiment:3}-\ref{experiment:5} show learning process for multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
+The fig.~\ref{experiment:3} shows multimodel~$\hat{\mathbf{f}}_1$.
+The fig.~\ref{experiment:4} shows multimodel~$\hat{\mathbf{f}}_2$.
+The fig.~\ref{experimen:5} shows multimodel~$\hat{\mathbf{f}}_3$.
 
-This part of experiment shows that multimodels~$\mathfrak{M}_2, \mathfrak{M}_3$ approximate circles better than multimodel~$\mathfrak{M}_1$ even for the real images.
+This part of experiment shows that multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate circles better than multimodel~$\hat{\mathbf{f}}_1$ even for the real images.
 
 
 \section{Conclusion}
-The paper compares multimodels with different prior distributions for the model parameters. Concentric circles with different noises are data in a computational experiment. Linear models were used to approximate the circles in the image. The gate function is a two-layer fully connected neural network.
-
+The paper compares multimodels with different prior distributions for the model parameters. Concentric circles with different noises are data in the computational experiment. The linear models were used to approximate the circles in the image. The gate function is a two-layer fully connected neural network.
 The experiment compares the model with the prior distribution and without it. The multimodel with prior distribution is more accurate compared to the model without prior distribution.
-
 Another experiment compares different types of regularization. The experiment showed that multimodel with regularization is more stable.
-
 The experiment shows that all models in this article are sensitive to outburst. To solve this problem, it is proposed to use a local model that approximates noise.
 
-In future work, it is planned to improve the multimodel by adding a prior distribution for the gate function parameters. It is planned to add a local model that approximates noise in the data. It is assumed that the probability of noise is low.
+The future work, plannes to improve the multimodel by adding a prior distribution for the gate function parameters. It plannes to add a local model that approximates noise in the data. It assumes that the probability of noise is low.
 
 \begin{thebibliography}{99}
 \bibitem{Tianqi2016}
@@ -645,18 +634,18 @@ In future work, it is planned to improve the multimodel by adding a prior distri
 \textbf{M} \in \{0,1\}^{m_1 \times m_2},
 \end{aligned}
 \]
-где $0$ отвечает черной точке --- изображения, $1$ --- белой точке фона.
+где~$0$ отвечает черной точке --- изображения,~$1$ --- белой точке фона.
 
-По изображению $\textbf{M}$ строится выборка $\textbf{C}$, элементами которой являются координаты~$x_i, y_i$ белых точек на картинке:
+По изображению~$\textbf{M}$ строится выборка~$\textbf{C}$, элементами которой являются координаты~$x_i, y_i$ белых точек на картинке:
 \[
 \label{apendix:el:eq:2}
 \begin{aligned}
 \textbf{C} \in  \mathbb{R}^{N \times 2},
 \end{aligned}
 \]
-где $N$ --- число черных точек на изображении $\textbf{M}$.
+где~$N$ --- число черных точек на изображении~$\textbf{M}$.
 
-Обозначим $x_0, y_0$ --- центр эллипса, который требуется найти на бинарном изображении $\textbf{M}$, а $a, b$ его коэффициенты вдоль координат. Элементы выборки $\left(x_i, y_i\right)\in\textbf{C}$ являются геометрическим местом точек, которое заданно уравнением эллипса:
+Обозначим~$x_0, y_0$ --- центр эллипса, который требуется найти на бинарном изображении~$\textbf{M}$, а~$a, b$ его коэффициенты вдоль координат. Элементы выборки~$\left(x_i, y_i\right)\in\textbf{C}$ являются геометрическим местом точек, которое задано уравнением эллипса:
 \[
 \label{apendix:el:eq:3}
 \begin{aligned}
@@ -677,7 +666,7 @@ In future work, it is planned to improve the multimodel by adding a prior distri
 \textbf{X}\textbf{w} \approx \textbf{y},  \quad \textbf{X} = \text{concat}\left[\textbf{C}, \left[y_1^2, y_2^2, \cdots, y_N^2\right]^{\mathsf{T}}, \textbf{1}\right], \quad \textbf{y} = [x_1^2, x_2^2, \cdots, x_N^2]^{\mathsf{T}},
 \end{aligned}
 \]
-где найденые оптимальные параметры линейной регрессии $\textbf{w} = \bigr[w_1, w_2, w_3, w_4\bigr]^{\mathsf{T}}$ восстанавливают параметры окружности:
+где найденые оптимальные параметры линейной регрессии~$\textbf{w} = \bigr[w_1, w_2, w_3, w_4\bigr]^{\mathsf{T}}$ восстанавливают параметры окружности:
 \[
 \label{apendix:el:eq:6}
 \begin{aligned}
