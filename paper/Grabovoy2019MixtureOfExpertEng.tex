@@ -71,14 +71,13 @@ The real data is a human eye image from the iris detection problem.
 }
 
 \section{Introduction}
-The paper studies the problem of a mixture of experts constructing. A mixture of experts is multimodel, which are weighed local models that approximate the dataset. The weighting coefficients depend on datum from the dataset.
+The paper studies the problem of a mixture of experts construction. The mixture of experts is a multimodel, which are weighed local models that approximate the dataset. The weighting coefficients depend on objects.
+Examples of multimodel are bagging, gradient boosting~\cite{Tianqi2016} and random forest~\cite{Ishwaran2012}. There are approaches to multimodeling~\cite{Yuksel2012} suggests that the contribution of each expert to the answer depends on the object from the dataset. The mixture of experts uses a gate function to weight predictions of each expert.
 
-Examples of multimodel are bagging, gradient boosting~\cite{Tianqi2016} and random forest~\cite{Ishwaran2012}. There are approaches to multimodeling~\cite{Yuksel2012} suggests that the contribution of each expert to the answer depends on the object from the dataset. A mixture of experts uses a gate function that weights the prediction of each expert.
-
-The main problem of multimodal is a convergence dependence on the initial point.
-We are using the probability approach for finding optimal mixture parameters and local expert parameters.
-The paper proposes to use different prior distribution for the parameters to improve convergence.
-The paper introduces the method which is using a dependence between prior distribution to improve multimodel quality.
+The main problem of multimodel is a convergence dependence on the initial parameter values.
+The authors propose to use the probability approach to find optimal mixture parameters and local expert parameters.
+The paper proposes to use various prior distribution of the parameters to improve convergence of the optimisation.
+The paper introduces the method, which use a dependence between prior distribution to improve multimodel quality.
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/statment}
@@ -93,18 +92,17 @@ In this paper, each expert is a linear model.
 A gate function is a two-layer fully connected neural network.
 
 \paragraph{Related work.}
-Many papers on a mixture of experts are devoted to the choice of a gateway function: softmax, the Dirichlet process~\cite{Edward2002}, a neural network~\cite{Shazeer2017} with softmax function on the last layer.
+Many papers on a mixture of experts are devoted to a gateway function selection: softmax, the Dirichlet process~\cite{Edward2002}, some neural network~\cite{Shazeer2017} with softmax function on the last layer.
 Some papers are devoted to the choice of expert type. 
 Papers~\cite{Jordan1994, Jordan1991} analyze linear models as experts.
 Papers~\cite{Lima2007, Cao2003} analyze SVMs as experts.
-The paper~\cite{Yuksel2012} contains an overview of different methods for choosing a gate function and expert type.
+The paper~\cite{Yuksel2012} contains an overview of various methods of gate function and selection of experts type.
 
-A mixture of experts has many applications.
-Papers~\cite{Yumlu2003, Cheung1995, Weigend2000} use a mixture of experts in the task of forecasting time series.
-The paper~\cite{Ebrahimpour2009} uses a mixture of experts in the task of recognizing handwritten numbers.
-Papers~\cite{Estabrooks2001, Mossavat2010, Peng1996, Tuerk2001}  are devoted to methods of text and speech recognition by using a mixture of experts.
-The paper~\cite{Sminchisescu2007} analyzes a mixture of experts in the task of recognizing three-dimensional human movements.
-
+The method of mixture of experts has many applications.
+Papers~\cite{Yumlu2003, Cheung1995, Weigend2000} use the mixture of experts in time series forecasting.
+The paper~\cite{Ebrahimpour2009} uses the mixture of experts in the task of recognizing handwritten numbers.
+Papers~\cite{Estabrooks2001, Mossavat2010, Peng1996, Tuerk2001}  are devoted to methods of text and speech recognition by using the mixture of experts.
+The paper~\cite{Sminchisescu2007} analyzes the mixture of experts to recognize three-dimensional human movements.
 The paper~\cite{Bowyer2010} is devoted to a review of the study results on the iris detection in the image.
 The methods of highlighting the borders of the iris and pupil are described in papers~\cite{Matveev2010, Matveev2014}.
 
@@ -404,10 +402,8 @@ where~$\textbf{w}^{0}_1 = [0, 0, 0.1],\ \textbf{w}^{0}_2 = [0, 0, 2]$.
 \label{experiment:1}
 \end{figure}
 The computational experiment compares quality of mixture of experts~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ on a synthetic dataset.
-
 The synthetic data were generated as two concentric circles with different noise levels.
-The Synthetic~1 is the image without any noises, the Synthetic~2 is the image with a noise radius and the Synthetic~3 is an image with uniform noise.
-
+Synthetic~1 is the image without any noises, Synthetic~2 is the image with a noise radius and the Synthetic~3 is an image with uniform noise.
 The fig.~\ref{experiment:1} shows results of multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
 All multimodels run 50 iterations of the EM-algorithm.
 Multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate circles better than multimodel~$\hat{\mathbf{f}}_1$. Tab.~\ref{tb:ce:1} shows the approximation quality~\eqref{eq:ce:ex:0:1} for all multimodels.
@@ -463,18 +459,19 @@ Multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate circles better 
 \caption{Visualization of convergence for the multimodel without any priors.}
 \label{experiment:st:2:5}
 \end{figure}
-The experiment analyzes multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ during the EM-algorithm convergence. Multimodels were analysed on the synthetic dataset~Synthetic~3.
+The experiment analyzes multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ during the EM-algorithm convergence.
+The multimodels were analysed on the synthetic dataset~Synthetic~3.
 
-The fig.~\ref{experiment:st:2:1} shows the dependence of the radius and center on the EM-algorithm iteration number.
-The multimodel with prior distribution for the parameters~$\hat{\mathbf{f}}_2$  approximates circles better than multimodel~$\hat{\mathbf{f}}_1$ without any priors.
-The multimodel with prior regularisation~$\hat{\mathbf{f}}_3$ approximates circles more stable than multimodel~$\hat{\mathbf{f}}_2$.
+Fig.~\ref{experiment:st:2:1} shows the dependence of the radius and center on the EM-algorithm iteration number.
+The multimodel~$\hat{\mathbf{f}}_2$ with prior distribution for the parameters approximates circles better than multimodel~$\hat{\mathbf{f}}_1$ without any priors.
+The multimodel~$\hat{\mathbf{f}}_3$ with prior regularisation approximates circles more stable than multimodel~$\hat{\mathbf{f}}_2$.
 
-The fig.~\ref{experiment:st:2:2} shows the dependence of log-likelihood~\eqref{eq:st:new:1} on the EM-algorithm iteration number.
+Fig.~\ref{experiment:st:2:2} shows the dependence of log-likelihood~\eqref{eq:st:new:1} on the EM-algorithm iteration number.
 The log-likelihood of multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ is growing faster than multimodel~$\hat{\mathbf{f}}_1$.  After the $20$-th iteration all three multimodels have the same log-likelihood.
 
-The fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:5} show learning process for multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
-The fig.~\ref{experiment:st:2:5} shows multimodel~$\hat{\mathbf{f}}_1$, which does not approximate circles correctly.
-The fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:4} show multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$, which approximate circles correctly.
+Fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:5} show learning process for multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
+Fig.~\ref{experiment:st:2:5} shows multimodel~$\hat{\mathbf{f}}_1$, which does not approximate circles correctly.
+Fig.~\ref{experiment:st:2:3}-\ref{experiment:st:2:4} show multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$, which approximate circles correctly.
 
 The experiment shows that multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ with prior distribution for the parameters approximate circles better than multimodel~$\hat{\mathbf{f}}_1$ without any priors.
 
@@ -493,15 +490,12 @@ The experiment shows that multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ w
 \end{figure}
 
 The experiment analyzes dependence of multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ on the noise level. 
-Multimodels were analysed on the synthetic dataset~Synthetic~1, with adding various noise level.
-The lowest noise level is equal to~$0$, when no noise. The highest noise level is equal to~$1$, when number of noise datum is equal to number of point in circles.
-
-The fig.~\ref{experiment:st:3:1} shows the dependence of center and radius on the noise level. It shows that circle radius increases with increasing noise level. 
+The multimodels were analysed on the synthetic dataset~Synthetic~1, with adding various noise level.
+The lowest noise level is equal to~$0$, when number of noise samples is equal to $0$. The highest noise level is equal to~$1$, when number of noise samples is equal to number of point in circles.
+Fig.~\ref{experiment:st:3:1} shows the dependence of center and radius on the noise level. It shows that circle radius increases with increasing noise level. 
 The multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate circles center correctly, but the multimodel~$ \hat{\mathbf{f}}_3$ is more stable.
-
-The fig.~\ref{experiment:st:3:2} shows the dependence of log-likelihood~\eqref{eq:st:new:1} on the noise level. 
+Fig.~\ref{experiment:st:3:2} shows the dependence of log-likelihood~\eqref{eq:st:new:1} on the noise level. 
 It shows that log-likelihood~\eqref{eq:st:new:1} is the same for all multimodels, but the fig.~\ref{experiment:st:3:1} shows that the approximation quality~\eqref{eq:ce:ex:0:1} depends on multimodels.
-
 This part of the experiment shows that multimodel~$\hat{\mathbf{f}}_3$ with prior regularisation is the most stable model.
 
 \paragraph{Real data.}
@@ -512,8 +506,7 @@ This part of the experiment shows that multimodel~$\hat{\mathbf{f}}_3$ with prio
 \end{figure}
 
 This part of the experiment analyzes multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ on the real data.
-
-The fig.~\ref{experiment:2} shows the result of different multimodels.
+Fig.~\ref{experiment:2} shows the result of different multimodels.
 The multimodel~$\hat{\mathbf{f}}_1$ approximates incorrectly one of the circles.
 The multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate both circles correctly.
 
@@ -535,21 +528,23 @@ The multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate both circle
 \label{experiment:5}
 \end{figure}
 
-The fig.~\ref{experiment:3}-\ref{experiment:5} show learning process for multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
-The fig.~\ref{experiment:3} shows multimodel~$\hat{\mathbf{f}}_1$.
-The fig.~\ref{experiment:4} shows multimodel~$\hat{\mathbf{f}}_2$.
-The fig.~\ref{experimen:5} shows multimodel~$\hat{\mathbf{f}}_3$.
+Fig.~\ref{experiment:3}-\ref{experiment:5} show learning process for multimodels~$\hat{\mathbf{f}}_1, \hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$.
+Fig.~\ref{experiment:3} shows multimodel~$\hat{\mathbf{f}}_1$.
+Fig.~\ref{experiment:4} shows multimodel~$\hat{\mathbf{f}}_2$.
+Fig.~\ref{experiment:5} shows multimodel~$\hat{\mathbf{f}}_3$.
 
 This part of experiment shows that multimodels~$\hat{\mathbf{f}}_2, \hat{\mathbf{f}}_3$ approximate circles better than multimodel~$\hat{\mathbf{f}}_1$ even for the real images.
 
 
 \section{Conclusion}
-The paper compares multimodels with different prior distributions for the model parameters. Concentric circles with different noises are data in the computational experiment. The linear models were used to approximate the circles in the image. The gate function is a two-layer fully connected neural network.
-The experiment compares the model with the prior distribution and without it. The multimodel with prior distribution is more accurate compared to the model without prior distribution.
+The paper compares multimodels with various prior distributions of model parameters. 
+The computational experiment hold on the concentric circles with different noises.
+The linear models were used to approximate the circles in the image. The gate function is the two-layer fully connected neural network.
+The experiment compares the multimodel with the prior distribution and without it. The multimodel with prior distribution is more accurate in comparison to the multimodel without it.
 Another experiment compares different types of regularization. The experiment showed that multimodel with regularization is more stable.
-The experiment shows that all models in this article are sensitive to outburst. To solve this problem, it is proposed to use a local model that approximates noise.
+The experiment shows that all models in this article are sensitive to outlines. To solve this problem, the aouthors proposed to use a local model, which approximate noise. 
 
-The future work, plannes to improve the multimodel by adding a prior distribution for the gate function parameters. It plannes to add a local model that approximates noise in the data. It assumes that the probability of noise is low.
+The future work plannes to improve the multimodel by adding a prior distribution for the gate function parameters. It plannes to add a local model that approximates noise in the data. It assumes that the probability of noise is low.
 
 \begin{thebibliography}{99}
 \bibitem{Tianqi2016}
