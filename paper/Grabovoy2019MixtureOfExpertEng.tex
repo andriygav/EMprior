@@ -80,8 +80,8 @@ Examples of multimodel are bagging, gradient boosting~\cite{Tianqi2016} and rand
 The paper~\cite{Yuksel2012} suggests that the contribution of each expert to the answer depends on the object from the dataset.
 
 The main problem of multimodel construction is hight dependence of the resulted ensemble on the initial value of the parameters.
-The authors propose to use the probability approach to find optimal mixture parameters and local parameters, and proposes to use various prior distributions of the parameters to improve stability of the multimodel.
-The paper introduces the method, which use a dependence between prior distribution to improve multimodel quality.
+The authors propose to use the probability approach to find optimal gate function parameters and local parameters, and proposes to use various prior distributions of the parameters to improve stability of the multimodel.
+The paper introduces a method, which use dependence between prior distributions to improve the multimodel quality.
 
 \begin{figure}[h!t]\center
 \includegraphics[width=1\textwidth]{result_eng/statment}
@@ -89,25 +89,24 @@ The paper introduces the method, which use a dependence between prior distributi
 \label{example:1}
 \end{figure}
 
-The paper analyses multimodel quality dependence on the prior distribution for the expert's parameters.
-It is solves a problem of circles approximation on a binarized image.
+As a practical example, the circles approximation on a binarized image are solved.
 Examples of images are shown in fig.~\ref{example:1}.
 In this paper, each expert is a linear model.
 A gate function is a two-layer fully connected neural network.
 
 \paragraph{Related work.}
-Many papers on a mixture of experts are devoted to a gateway function selection: softmax, the Dirichlet process~\cite{Edward2002}, some neural network~\cite{Shazeer2017} with softmax function on the last layer.
-Some papers are devoted to the choice of expert type. 
+Many papers on a mixture of experts are devoted to gateway function selection: softmax, the Dirichlet process~\cite{Edward2002}, neural networks~\cite{Shazeer2017} with softmax function on the last layer.
+Some papers are devoted to the choice of the expert type. 
 Papers~\cite{Jordan1994, Jordan1991} analyze linear models as experts.
 Papers~\cite{Lima2007, Cao2003} analyze SVMs as experts.
-The paper~\cite{Yuksel2012} contains an overview of various methods of gate function and selection of experts type.
+The paper~\cite{Yuksel2012} contains an overview of various gate function and various expert types.
 
 The method of mixture of experts has many applications.
 Papers~\cite{Yumlu2003, Cheung1995, Weigend2000} use the mixture of experts in time series forecasting.
-The paper~\cite{Ebrahimpour2009} uses the mixture of experts in the task of recognizing handwritten numbers.
+Paper~\cite{Ebrahimpour2009} uses the mixture of experts in the task of recognizing handwritten numbers.
 Papers~\cite{Estabrooks2001, Mossavat2010, Peng1996, Tuerk2001}  are devoted to methods of text and speech recognition by using the mixture of experts.
-The paper~\cite{Sminchisescu2007} analyzes the mixture of experts to recognize three-dimensional human movements.
-The paper~\cite{Bowyer2010} is devoted to a review of the study results on the iris detection in the image.
+Paper~\cite{Sminchisescu2007} analyzes the mixture of experts to recognize three-dimensional human movements.
+Paper~\cite{Bowyer2010} is devoted to a review of the study results on the iris detection in the image.
 The methods of highlighting the borders of the iris and pupil are described in papers~\cite{Matveev2010, Matveev2014}.
 
 \section{Problem statement of circle parameters estimation}
