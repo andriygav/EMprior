@@ -95,9 +95,9 @@
 \textbf{M} \in \{0,1\}^{m_1 \times m_2},
 \end{aligned}
 \]
-где~$1$ --- это черный пиксель, который является изображением, а~$0$ --- белый пиксель, который является фоном. 
+где~$1$ --- это черный пиксель, который принадлежит рассматриваемой фигуре на изображении, а~$0$ --- белый пиксель, который является фоном изображения. 
 Пример изображения показан на рис.~\ref{example:1}.
-Изображение~$\textbf{M}$ отображается в множество координат~\mbox{$\textbf{C}=\left\{x_i, y_i\right\}_{i=1}^{N}$}. Координата~$(x_i, y_i)$ является координатой черного пикселя на изображении~$\textbf{M}$:
+Изображение~$\textbf{M}$ отображается в множество координат~\mbox{$\textbf{C}=\left\{x_i, y_i\right\}_{i=1}^{N}$}. Координата~$(x_i, y_i)$ является координатой $i$-го черного пикселя на изображении~$\textbf{M}$:
 \[
 \label{eq:st:cr:2}
 \begin{aligned}
@@ -107,18 +107,20 @@
 где~$N$ --- число черных пикселей.
 
 Обозначим точку~$(x_0, y_0)$ центром окружности, а~$r$ радиусом окружности.
-Координаты~$\left(x_i, y_i\right)\in\textbf{C}$ это геометрическое место точек, которое задается следующим уравнением:
+Координаты~$\left(x_i, y_i\right)\in\textbf{C}$ это геометрическое место точек, которое удовлетворяет системе уравнений:
 \[
 \label{eq:st:cr:3}
 \begin{aligned}
-\bigr(x_i - x_0\bigr)^{2}+\bigr(y_i-y_0\bigr)^2 = r^2.
+\bigr(x_i - x_0\bigr)^{2}+\bigr(y_i-y_0\bigr)^2 = r^2 + \varepsilon_i, \qquad \forall i \in \{1, \cdots, N\},
 \end{aligned}
 \]
+где $\varepsilon_i \in \mathcal{N}\bigr(0, \beta^{-1}\bigr)$ является невязкой $i$-го уравнения, которая является следствием шума на изображении.
+
 Раскрыв скобки получаем:
 \[
 \label{eq:st:cr:4}
 \begin{aligned}
-\left(2x_0\right)\cdot x_i + \left(2y_0\right)\cdot y_i+\left(r^2-x_0^2-y_0^2\right)\cdot1 = x_{i}^2 + y_{i}^2.
+\left(2x_0\right)\cdot x_i + \left(2y_0\right)\cdot y_i+\left(r^2-x_0^2-y_0^2\right)\cdot1 = x_{i}^2 + y_{i}^2 + \varepsilon_i.
 \end{aligned}
 \]
 Выражение~\eqref{eq:st:cr:4} переписывается в задачу линейной регрессии следующим образом:
@@ -135,29 +137,22 @@
 x_0 = \frac{w_1}{2}, \quad y_0 = \frac{w_2}{2}, \quad r = \sqrt[]{w_3+x_{0}^{2}+y_{0}^{2}}.
 \end{aligned}
 \]
-The solution of problem~\eqref{eq:st:cr:5} reconstructs the circle parameters only if the number of circles in an image is equal to one.
-The authors propose to use the multimodel for the image, which consists of several circles.
-The multimodel is an ensemble of the linear models.
-Each linear model approximates only one circle in the image.
-In this paper, multimodel is a mixture of experts.
-
 Решение уравнения~\eqref{eq:st:cr:5} находит параметры единственной окружности на изображении. В случае, когда на изображении несколько окружностей, предлагается использовать смесь экспертов, которая состоит из линейных модели --- экспертов. Каждый эксперт описывает одну окружность на изображении.
 
 \section{Постановка задачи построения смеси экспертов}
-Обобщим подход аппроксимации одной окружности на изображении~\eqref{eq:st:cr:5} на случай, когда на изображении несколько окружностей.
-Предполагается, что каждая окружность записывается локальной моделью.
-Рассмотрим выборку для случая многих окружностей:
+Обобщим подход аппроксимации одной окружности на изображении на случай, когда на изображении несколько окружностей. Пусть изображение состоит из~$K$ окружностей, тогда множество черных пикселей $\textbf{C}$ представляется в виде:
 \[
 \label{eq:st:1}
 \begin{aligned}
-\textbf{X} \in \mathbb{R}^{N \times n}, \quad \textbf{y}\in \mathbb{R}^{N}
+\textbf{C} = \sqcup_{k=1}^{K}\textbf{C}_{k}',
 \end{aligned}
 \]
-где~$N$ --- размер выборки,~$n$ --- число признаков. В данной работе рассматривается случай~$n=3$.
+где~$\textbf{C}_{k}'$ множество точек принадлежащих $k$-й окружности. Множеству точек~$\textbf{C}_{k}' \subset\textbf{C}$ соответсвует задача линейной регрессии для выборки~$\textbf{X}_{k}' \subset \textbf{X}, \textbf{y}_{k}' \subset \textbf{y}$. Модель~$\mathbf{g}_k$ аппроксимирующая выборку~$\textbf{X}_{k}', \textbf{y}_{k}'$ является локальной моделью для выборки \textbf{X}, \textbf{y}.
+
 
 \begin{definition}
 \label{def:1}
-Модель~$\mathbf{g}$ называется локальной моделью для выборки~$\textbf{X},$ если~$\mathbf{g}$ аппроксимирует некоторое не пустое подмножество~$\textbf{X}'\subset\textbf{X}$.
+Модель~$\mathbf{g}$ называется локальной моделью для выборки~$\textbf{U},$ если~$\mathbf{g}$ аппроксимирует некоторое не пустое подмножество~$\textbf{U}'\subset\textbf{U}$.
 \end{definition}
 
 \begin{definition}
@@ -203,12 +198,12 @@ p\bigr(\mathbf{y}, \mathbf{W}|\mathbf{X}, \mathbf{V}\bigr) = \prod_{k=1}^{K}p^{k
 \[
 \label{eq:st:5}
 \begin{aligned}
-\hat{\mathbf{V}} = \arg\max_{\mathbf{V}} p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{V}\bigr).
+\hat{\mathbf{V}}, \hat{ \mathbf{W}} = \arg\max_{\mathbf{V}, \mathbf{W}} p\bigr(\mathbf{y},  \mathbf{W}|\mathbf{X}, \mathbf{V}\bigr).
 \end{aligned}
 \]
 
 \section{Вероятностная постановка смеси экспертов}
-Для построения смеси экспертов~(\ref{eq:st:2}, ~\ref{eq:st:4}), введем следующие вероятностные предположения о данных~\eqref{eq:st:1}:
+Для построения смеси экспертов~(\ref{eq:st:2}, ~\ref{eq:st:4}), введем следующие вероятностные предположения о данных~\eqref{eq:st:cr:5}:
 
 \begin{enumerate}
 	\item[1)] правдоподобие~$p_{k}\bigr(y_{i}|\mathbf{w}_{k}, \mathbf{x}_{i}\bigr) = \mathcal{N}\bigr(y_{i}|\mathbf{w}_{k}^{\mathsf{T}}\mathbf{x}_{i}, \beta^{-1}\bigr),$ где параметр~$\beta$ является уровнем шума,
